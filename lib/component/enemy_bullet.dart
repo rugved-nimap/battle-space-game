@@ -1,10 +1,8 @@
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flutter_game/component/player.dart';
-import 'package:flutter_game/flame/my_game.dart';
 
 class EnemyBullet extends SpriteComponent with HasGameRef, CollisionCallbacks {
   EnemyBullet({super.key, required Vector2 pos})
@@ -34,6 +32,7 @@ class EnemyBullet extends SpriteComponent with HasGameRef, CollisionCallbacks {
     super.onCollisionStart(intersectionPoints, other);
 
     if (other is Player) {
+      other.hitCount += 1;
       removeFromParent();
     }
   }

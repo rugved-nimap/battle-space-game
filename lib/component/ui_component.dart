@@ -4,18 +4,17 @@ import 'package:flame/components.dart';
 import 'package:flame/input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_game/flame/my_game.dart';
+import 'package:get/get.dart';
 
 class UiComponent extends Component with HasGameRef {
   int score;
   double distance;
   Vector2 screenSize;
-  BuildContext context;
 
   UiComponent({
     required this.score,
     required this.distance,
     required this.screenSize,
-    required this.context,
   }) : super(priority: 3);
 
   late TextComponent scoreText;
@@ -37,6 +36,7 @@ class UiComponent extends Component with HasGameRef {
         style: const TextStyle(
           fontSize: 25,
           color: Colors.white,
+          fontFamily: "Digital7",
         ),
       ),
       priority: 3,
@@ -49,6 +49,7 @@ class UiComponent extends Component with HasGameRef {
         style: const TextStyle(
           fontSize: 10,
           color: Colors.white,
+          fontFamily: "Digital7",
         ),
       ),
       priority: 3,
@@ -60,6 +61,7 @@ class UiComponent extends Component with HasGameRef {
         style: const TextStyle(
           fontSize: 10,
           color: Colors.white,
+          fontFamily: "Digital7",
         ),
       ),
     );
@@ -211,7 +213,8 @@ class UiComponent extends Component with HasGameRef {
   }
 
   void moveToMenuPage() {
-    Navigator.pop(context);
+    Get.back();
+    // Navigator.pop(context);
   }
 
   void restartGame() {

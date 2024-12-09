@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:flame/palette.dart';
 import 'package:flutter_game/component/enemy.dart';
 
 class PlayerBullet extends SpriteComponent with HasGameRef, CollisionCallbacks {

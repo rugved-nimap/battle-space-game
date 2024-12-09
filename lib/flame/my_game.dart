@@ -2,15 +2,16 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flame/game.dart';
 import 'package:flame/components.dart';
-import 'package:flutter/material.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter_game/component/enemy.dart';
 import 'package:flutter_game/component/player.dart';
 import 'package:flutter_game/component/ui_component.dart';
+import 'package:flutter_game/controller/global_controller.dart';
 
 class MyGame extends FlameGame with HasCollisionDetection {
+  GlobalController controller;
 
-  late BuildContext context;
-  MyGame({required this.context}) : super();
+  MyGame({required this.controller}) : super();
 
   late Player _player;
   late SpriteComponent background1;
@@ -23,12 +24,20 @@ class MyGame extends FlameGame with HasCollisionDetection {
   double enemyCoolDown = 2;
   double enemyLastSpawn = 0.0;
 
+  bool initialized = false;
   bool gameOver = false;
   int score = 0;
   double distance = 0;
 
+  late AudioPool fireSoundPool;
+  late AudioPool explosionSoundPool;
+
   @override
   FutureOr<void> onLoad() async {
+
+    fireSoundPool = controller.fireSoundPool;
+    explosionSoundPool = controller.explosionSoundPool;
+
     final bgSprite = await Sprite.load('background.jpg');
     background1 = SpriteComponent(
       sprite: bgSprite,
@@ -46,11 +55,11 @@ class MyGame extends FlameGame with HasCollisionDetection {
     add(background1);
     add(background2);
 
-    _player = Player(size: Vector2(100, 100));
+    _player = Player(size: Vector2(100, 100), controller: controller);
     add(_player);
 
     uiComponent =
-        UiComponent(score: score, distance: distance, screenSize: size, context: context);
+        UiComponent(score: score, distance: distance, screenSize: size);
     add(uiComponent);
 
     return super.onLoad();
@@ -71,9 +80,9 @@ class MyGame extends FlameGame with HasCollisionDetection {
       if (enemyLastSpawn >= enemyCoolDown) {
         int xPos = Random().nextInt(size.x.round() - 50);
         final enemy = Enemy(
-          size: Vector2(70, 70),
-          position: Vector2(xPos.toDouble(), -50),
-        );
+            size: Vector2(70, 70),
+            position: Vector2(xPos.toDouble(), -50),
+            controller: controller);
         add(enemy);
         enemyLastSpawn = 0;
       }
@@ -87,6 +96,20 @@ class MyGame extends FlameGame with HasCollisionDetection {
     super.update(dt);
   }
 
+  @override
+  void onDispose() {
+    fireSoundPool.dispose();
+    explosionSoundPool.dispose();
+    super.onDispose();
+  }
+
+  void initializedAudioPool() async {
+    fireSoundPool =
+        await FlameAudio.createPool('fire.wav', maxPlayers: 100, minPlayers: 1);
+    explosionSoundPool = await FlameAudio.createPool('explosion.mp3',
+        maxPlayers: 100, minPlayers: 1);
+  }
+
   void increaseScore() {
     score += 1;
     uiComponent.updateScore(score);
@@ -94,13 +117,16 @@ class MyGame extends FlameGame with HasCollisionDetection {
 
   void gameOverFunc() async {
     gameOver = true;
+
+    if (controller.isSfxOn) {
+      explosionSoundPool.start();
+    }
     add(
       SpriteAnimationComponent(
         position: _player.position,
         priority: 3,
         size: Vector2(100, 100),
-        animation:
-        SpriteAnimation.spriteList([
+        animation: SpriteAnimation.spriteList([
           await loadSprite('explosions/0.png'),
           await loadSprite('explosions/1.png'),
           await loadSprite('explosions/2.png'),
@@ -115,8 +141,8 @@ class MyGame extends FlameGame with HasCollisionDetection {
     uiComponent.gameOver();
   }
 
-  void restart() {
-    removeAll(List.from(children));
+  Future<void> restart() async {
+    removeAll(children);
 
     gameOver = false;
     score = 0;

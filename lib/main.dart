@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_game/binders/global_binder.dart';
 import 'package:flutter_game/pages/page1.dart';
+import 'package:get/get.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,10 +12,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: "Game",
       debugShowCheckedModeBanner: false,
       theme: ThemeData(),
+      initialBinding: GlobalBinder(),
       home: const Page1()
     );
   }

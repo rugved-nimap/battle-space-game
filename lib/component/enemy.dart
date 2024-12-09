@@ -2,14 +2,16 @@ import 'dart:async';
 
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_game/component/enemy_bullet.dart';
 import 'package:flutter_game/component/player.dart';
-import 'package:flutter_game/component/ui_component.dart';
 import 'package:flutter_game/flame/my_game.dart';
 
+import '../controller/global_controller.dart';
+
 class Enemy extends SpriteComponent with HasGameRef, CollisionCallbacks {
-  Enemy({super.key, required Vector2 size, required Vector2 position})
+
+  GlobalController controller;
+  Enemy({super.key, required Vector2 size, required Vector2 position, required this.controller})
       : super(size: size, position: position, priority: 2);
 
   double fireCooldown = 1;
@@ -49,12 +51,14 @@ class Enemy extends SpriteComponent with HasGameRef, CollisionCallbacks {
           priority: 3,
           size: Vector2(100, 100),
           animation:
-              SpriteAnimation.spriteList(_explosionSprites, stepTime: 0.08, loop: false),
+              SpriteAnimation.spriteList(_explosionSprites, stepTime: 0.08, loop: false,),
           removeOnFinish: true,
         ),
       );
 
       (gameRef as MyGame).increaseScore();
+      print(controller.isSfxOn);
+      if (controller.isSfxOn) (gameRef as MyGame).explosionSoundPool.start();
       removeFromParent();
     }
 
@@ -76,7 +80,6 @@ class Enemy extends SpriteComponent with HasGameRef, CollisionCallbacks {
       Set<Vector2> intersectionPoints, PositionComponent other) {
     super.onCollisionStart(intersectionPoints, other);
     if (other is Player) {
-      debugPrint("Game Over");
       (gameRef as MyGame).gameOverFunc();
     }
   }
