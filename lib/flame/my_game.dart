@@ -34,7 +34,6 @@ class MyGame extends FlameGame with HasCollisionDetection {
 
   @override
   FutureOr<void> onLoad() async {
-
     fireSoundPool = controller.fireSoundPool;
     explosionSoundPool = controller.explosionSoundPool;
 
@@ -58,8 +57,7 @@ class MyGame extends FlameGame with HasCollisionDetection {
     _player = Player(size: Vector2(100, 100), controller: controller);
     add(_player);
 
-    uiComponent =
-        UiComponent(score: score, distance: distance, screenSize: size);
+    uiComponent = UiComponent(score: score, distance: distance, screenSize: size);
     add(uiComponent);
 
     return super.onLoad();
@@ -79,10 +77,7 @@ class MyGame extends FlameGame with HasCollisionDetection {
     if (!gameOver) {
       if (enemyLastSpawn >= enemyCoolDown) {
         int xPos = Random().nextInt(size.x.round() - 50);
-        final enemy = Enemy(
-            size: Vector2(70, 70),
-            position: Vector2(xPos.toDouble(), -50),
-            controller: controller);
+        final enemy = Enemy(size: Vector2(70, 70), position: Vector2(xPos.toDouble(), -50), controller: controller);
         add(enemy);
         enemyLastSpawn = 0;
       }
@@ -104,10 +99,8 @@ class MyGame extends FlameGame with HasCollisionDetection {
   }
 
   void initializedAudioPool() async {
-    fireSoundPool =
-        await FlameAudio.createPool('fire.wav', maxPlayers: 100, minPlayers: 1);
-    explosionSoundPool = await FlameAudio.createPool('explosion.mp3',
-        maxPlayers: 100, minPlayers: 1);
+    fireSoundPool = await FlameAudio.createPool('fire.wav', maxPlayers: 100, minPlayers: 1);
+    explosionSoundPool = await FlameAudio.createPool('explosion.mp3', maxPlayers: 100, minPlayers: 1);
   }
 
   void increaseScore() {

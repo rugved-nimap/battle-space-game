@@ -1,17 +1,20 @@
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_game/utils/app_storage.dart';
 import 'package:get/get.dart';
 
 class GlobalController extends GetxController {
-
   bool isBgOn = true;
   bool isSfxOn = true;
   late AudioPool fireSoundPool;
   late AudioPool explosionSoundPool;
 
+  num highScore = 0;
+  String userName = "";
+
   @override
   void onInit() {
-    initializedAudio();
+    getUserDetails();
     super.onInit();
   }
 
@@ -21,15 +24,25 @@ class GlobalController extends GetxController {
     super.dispose();
   }
 
+  void getUserDetails() async {
+    userName = AppStorage.valueFor(StorageKey.userName) ?? "";
+    highScore = AppStorage.valueFor(StorageKey.highScore) ?? 0;
+    isBgOn = AppStorage.valueFor(StorageKey.musicSetting) ?? true;
+    isSfxOn = AppStorage.valueFor(StorageKey.sfxSetting) ?? true;
+
+    debugPrint("isBgOn ${AppStorage.valueFor(StorageKey.musicSetting)}");
+    debugPrint("$isBgOn");
+
+    initializedAudio();
+  }
+
   void initializedAudio() async {
     FlameAudio.bgm.initialize();
-    await FlameAudio.bgm.play('bg_music.mp3');
-    isBgOn = FlameAudio.bgm.isPlaying;
-
-    fireSoundPool = await FlameAudio.createPool('fire.wav',
-        maxPlayers: 100, minPlayers: 1);
-    explosionSoundPool = await FlameAudio.createPool('explosion.mp3',
-        maxPlayers: 100, minPlayers: 1);
+    if (isBgOn) {
+      await FlameAudio.bgm.play('bg_music.mp3');
+    }
+    fireSoundPool = await FlameAudio.createPool('fire.wav', maxPlayers: 100, minPlayers: 1);
+    explosionSoundPool = await FlameAudio.createPool('explosion.mp3', maxPlayers: 100, minPlayers: 1);
   }
 
   void settings() {
@@ -46,6 +59,7 @@ class GlobalController extends GetxController {
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
+            spacing: 25,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -57,16 +71,14 @@ class GlobalController extends GetxController {
                     children: [
                       IconButton(
                         onPressed: () async {
-                          isBgOn
-                              ? FlameAudio.bgm.stop()
-                              : FlameAudio.bgm.play('bg_music.mp3');
+                          isBgOn ? FlameAudio.bgm.stop() : FlameAudio.bgm.play('bg_music.mp3');
                           isBgOn = !isBgOn;
+                          AppStorage.setValue(StorageKey.musicSetting, isBgOn);
+                          debugPrint("AppStorage.valueFor(StorageKey.musicSetting) => ${AppStorage.valueFor(StorageKey.musicSetting)}");
                           setState(() {});
                         },
                         icon: Icon(
-                          isBgOn
-                              ? Icons.volume_up_rounded
-                              : Icons.volume_off_rounded,
+                          isBgOn ? Icons.volume_up_rounded : Icons.volume_off_rounded,
                           color: Colors.indigoAccent,
                           size: 30,
                         ),
@@ -88,16 +100,11 @@ class GlobalController extends GetxController {
                       IconButton(
                         onPressed: () {
                           isSfxOn = !isSfxOn;
-                          // isBgOn
-                          //     ? FlameAudio.bgm.stop()
-                          //     : FlameAudio.bgm
-                          //     .play('bg_music', volume: bgmusic_volume);
+                          AppStorage.setValue(StorageKey.sfxSetting, isSfxOn);
                           setState(() {});
                         },
                         icon: Icon(
-                          isSfxOn
-                              ? Icons.volume_up_rounded
-                              : Icons.volume_off_rounded,
+                          isSfxOn ? Icons.volume_up_rounded : Icons.volume_off_rounded,
                           color: Colors.indigoAccent,
                           size: 30,
                         ),
@@ -114,29 +121,15 @@ class GlobalController extends GetxController {
                   ),
                 ],
               ),
-              const SizedBox(
-                height: 25,
-              ),
               ElevatedButton(
-                onPressed: () {
-                  Get.back();
-                },
+                onPressed: Get.back,
                 style: ButtonStyle(
-                  shape: WidgetStatePropertyAll(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
+                  shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
                   backgroundColor: const WidgetStatePropertyAll(Colors.black),
                 ),
                 child: const Text(
                   "Close",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
-                    fontFamily: "Digital7",
-                  ),
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15, fontFamily: "Digital7"),
                 ),
               )
             ],

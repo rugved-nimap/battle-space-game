@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_game/component/enemy_bullet.dart';
 import 'package:flutter_game/component/player.dart';
 import 'package:flutter_game/flame/my_game.dart';
@@ -18,6 +19,7 @@ class Enemy extends SpriteComponent with HasGameRef, CollisionCallbacks {
   double lastFireTime = 0.0;
 
   int hitCount = 0;
+  // ignore: prefer_final_fields
   List<Sprite> _explosionSprites = [];
 
   @override
@@ -57,7 +59,7 @@ class Enemy extends SpriteComponent with HasGameRef, CollisionCallbacks {
       );
 
       (gameRef as MyGame).increaseScore();
-      print(controller.isSfxOn);
+      debugPrint("${controller.isSfxOn}");
       if (controller.isSfxOn) (gameRef as MyGame).explosionSoundPool.start();
       removeFromParent();
     }

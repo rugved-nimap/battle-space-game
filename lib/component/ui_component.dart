@@ -4,6 +4,7 @@ import 'package:flame/components.dart';
 import 'package:flame/input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_game/flame/my_game.dart';
+import 'package:flutter_game/utils/app_storage.dart';
 import 'package:get/get.dart';
 
 class UiComponent extends Component with HasGameRef {
@@ -117,7 +118,7 @@ class UiComponent extends Component with HasGameRef {
     gameOverBackButton = ButtonComponent(
       button: RectangleComponent(
         size: Vector2(100, 40),
-        paint: Paint()..color = Colors.grey.shade100.withOpacity(0.5),
+        paint: Paint()..color = Colors.grey.shade100.withValues(alpha: 0.5),
         children: [
           PositionComponent(
             position: Vector2(50 - (uiCancelText.width / 2), 20 - (uiCancelText.height / 2)),
@@ -147,7 +148,7 @@ class UiComponent extends Component with HasGameRef {
     gameOverRestartButton = ButtonComponent(
       button: RectangleComponent(
         size: Vector2(100, 40),
-        paint: Paint()..color = Colors.lightGreenAccent.shade100.withOpacity(0.5),
+        paint: Paint()..color = Colors.lightGreenAccent.shade100.withValues(alpha: 0.5),
         children: [
           PositionComponent(
             position: Vector2(
@@ -210,6 +211,10 @@ class UiComponent extends Component with HasGameRef {
     add(gameOverDistanceText);
     add(gameOverBackButton);
     add(gameOverRestartButton);
+    final num bestScore = AppStorage.valueFor(StorageKey.highScore) ?? 0;
+    if (bestScore < distance) {
+      AppStorage.setValue(StorageKey.highScore, bestScore);
+    }
   }
 
   void moveToMenuPage() {
