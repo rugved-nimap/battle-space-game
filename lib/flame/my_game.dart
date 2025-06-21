@@ -7,6 +7,7 @@ import 'package:flutter_game/component/enemy.dart';
 import 'package:flutter_game/component/player.dart';
 import 'package:flutter_game/component/ui_component.dart';
 import 'package:flutter_game/controller/global_controller.dart';
+import 'package:flutter_game/utils/asset_utils.dart';
 
 class MyGame extends FlameGame with HasCollisionDetection {
   GlobalController controller;
@@ -37,7 +38,7 @@ class MyGame extends FlameGame with HasCollisionDetection {
     fireSoundPool = controller.fireSoundPool;
     explosionSoundPool = controller.explosionSoundPool;
 
-    final bgSprite = await Sprite.load('background.jpg');
+    final bgSprite = await Sprite.load(AssetUtils.background.split('/').last);
     background1 = SpriteComponent(
       sprite: bgSprite,
       size: Vector2(size.x, size.y),
@@ -77,7 +78,12 @@ class MyGame extends FlameGame with HasCollisionDetection {
     if (!gameOver) {
       if (enemyLastSpawn >= enemyCoolDown) {
         int xPos = Random().nextInt(size.x.round() - 50);
-        final enemy = Enemy(size: Vector2(70, 70), position: Vector2(xPos.toDouble(), -50), controller: controller);
+        final enemy = Enemy(
+          size: Vector2(70, 70),
+          position: Vector2(xPos.toDouble(), -50),
+          controller: controller,
+          healthBar: uiComponent.healthBar,
+        );
         add(enemy);
         enemyLastSpawn = 0;
       }
@@ -99,8 +105,8 @@ class MyGame extends FlameGame with HasCollisionDetection {
   }
 
   void initializedAudioPool() async {
-    fireSoundPool = await FlameAudio.createPool('fire.wav', maxPlayers: 100, minPlayers: 1);
-    explosionSoundPool = await FlameAudio.createPool('explosion.mp3', maxPlayers: 100, minPlayers: 1);
+    fireSoundPool = await FlameAudio.createPool(AssetUtils.firingSound, maxPlayers: 100, minPlayers: 1);
+    explosionSoundPool = await FlameAudio.createPool(AssetUtils.explosionSound, maxPlayers: 100, minPlayers: 1);
   }
 
   void increaseScore() {
@@ -114,19 +120,24 @@ class MyGame extends FlameGame with HasCollisionDetection {
     if (controller.isSfxOn) {
       explosionSoundPool.start();
     }
+
     add(
       SpriteAnimationComponent(
         position: _player.position,
         priority: 3,
         size: Vector2(100, 100),
-        animation: SpriteAnimation.spriteList([
-          await loadSprite('explosions/0.png'),
-          await loadSprite('explosions/1.png'),
-          await loadSprite('explosions/2.png'),
-          await loadSprite('explosions/3.png'),
-          await loadSprite('explosions/4.png'),
-          await loadSprite('explosions/5.png'),
-        ], stepTime: 0.08, loop: false),
+        animation: SpriteAnimation.spriteList(
+          [
+            await loadSprite(AssetUtils.explosion0),
+            await loadSprite(AssetUtils.explosion1),
+            await loadSprite(AssetUtils.explosion2),
+            await loadSprite(AssetUtils.explosion3),
+            await loadSprite(AssetUtils.explosion4),
+            await loadSprite(AssetUtils.explosion5),
+          ],
+          stepTime: 0.08,
+          loop: false,
+        ),
         removeOnFinish: true,
       ),
     );

@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flame/components.dart';
 import 'package:flame/input.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_game/component/health_bar.dart';
+import 'package:flutter_game/controller/global_controller.dart';
 import 'package:flutter_game/flame/my_game.dart';
 import 'package:flutter_game/utils/app_storage.dart';
 import 'package:get/get.dart';
@@ -26,10 +28,10 @@ class UiComponent extends Component with HasGameRef {
   late TextComponent gameOverDistanceText;
   late ButtonComponent gameOverRestartButton;
   late ButtonComponent gameOverBackButton;
+  late PositionComponent healthBar;
 
   @override
-  FutureOr<void> onLoad() {
-
+  FutureOr<void> onLoad() async {
     scoreText = TextComponent(
       text: "Score: $score",
       position: Vector2(25, 40),
@@ -67,7 +69,6 @@ class UiComponent extends Component with HasGameRef {
       ),
     );
 
-
     gameOverText = TextComponent(
         text: "Game Over",
         textRenderer: TextPaint(
@@ -79,8 +80,7 @@ class UiComponent extends Component with HasGameRef {
         ),
         priority: 5);
 
-    gameOverText.position =
-        Vector2((screenSize.x / 2) - (gameOverText.width / 2), 300);
+    gameOverText.position = Vector2((screenSize.x / 2) - (gameOverText.width / 2), 300);
 
     gameOverScoreText = TextComponent(
       text: "Score: $score",
@@ -94,9 +94,7 @@ class UiComponent extends Component with HasGameRef {
       priority: 5,
     );
 
-    gameOverScoreText.position = Vector2(
-        (screenSize.x / 2) - (gameOverScoreText.width / 2),
-        gameOverText.position.y + 75);
+    gameOverScoreText.position = Vector2((screenSize.x / 2) - (gameOverScoreText.width / 2), gameOverText.position.y + 75);
 
     gameOverDistanceText = TextComponent(
       text: "Distance: $distance",
@@ -110,9 +108,7 @@ class UiComponent extends Component with HasGameRef {
       priority: 5,
     );
 
-    gameOverDistanceText.position = Vector2(
-        (screenSize.x / 2) - (gameOverDistanceText.width / 2),
-        gameOverScoreText.position.y + 40);
+    gameOverDistanceText.position = Vector2((screenSize.x / 2) - (gameOverDistanceText.width / 2), gameOverScoreText.position.y + 40);
 
     final uiCancelText = buttonText("Cancel");
     gameOverBackButton = ButtonComponent(
@@ -125,7 +121,7 @@ class UiComponent extends Component with HasGameRef {
             children: [uiCancelText],
           ),
         ],
-          priority: 0,
+        priority: 0,
       ),
       // buttonDown: RectangleComponent(
       //   size: Vector2(100, 40),
@@ -186,9 +182,14 @@ class UiComponent extends Component with HasGameRef {
       gameOverDistanceText.position.y + 40,
     );
 
+    healthBar = HealthBar(position: Vector2(screenSize.x - 150, 40))
+      ..anchor = Anchor.topRight
+      ..scale = Vector2(-1, 1);
+
     add(scoreText);
     add(distanceText);
     add(fpsTextComponent);
+    add(healthBar);
 
     return super.onLoad();
   }
@@ -211,9 +212,14 @@ class UiComponent extends Component with HasGameRef {
     add(gameOverDistanceText);
     add(gameOverBackButton);
     add(gameOverRestartButton);
+
     final num bestScore = AppStorage.valueFor(StorageKey.highScore) ?? 0;
-    if (bestScore < distance) {
-      AppStorage.setValue(StorageKey.highScore, bestScore);
+
+    if (score > bestScore) {
+      AppStorage.setValue(StorageKey.highScore, score);
+      final controller = Get.find<GlobalController>();
+      controller.highScore = score;
+      // controller.update();
     }
   }
 
@@ -238,5 +244,4 @@ class UiComponent extends Component with HasGameRef {
       ),
     );
   }
-
 }

@@ -2,11 +2,17 @@ import 'dart:async';
 
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:flutter_game/component/health_bar.dart';
 import 'package:flutter_game/component/player.dart';
 
 class EnemyBullet extends SpriteComponent with HasGameRef, CollisionCallbacks {
-  EnemyBullet({super.key, required Vector2 pos})
-      : super(position: pos, priority: 1);
+  final PositionComponent healthBar;
+
+  EnemyBullet({
+    super.key,
+    required Vector2 pos,
+    required this.healthBar,
+  }) : super(position: pos, priority: 1);
 
   @override
   FutureOr<void> onLoad() async {
@@ -33,6 +39,9 @@ class EnemyBullet extends SpriteComponent with HasGameRef, CollisionCallbacks {
 
     if (other is Player) {
       other.hitCount += 1;
+      if (healthBar is HealthBar) {
+        (healthBar as HealthBar).updateHearts(5 - other.hitCount);
+      }
       removeFromParent();
     }
   }

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_game/binders/global_binder.dart';
-import 'package:flutter_game/pages/page1.dart';
+import 'package:flutter_game/pages/home_page.dart';
 import 'package:flutter_game/utils/app_storage.dart';
+import 'package:flutter_game/utils/app_theme.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -17,11 +18,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: "Game",
+      title: "Battle Space",
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(),
+      theme: AppTheme.theme(),
       initialBinding: GlobalBinder(),
-      home: const Page1()
+      home: const HomePage()
     );
   }
 }

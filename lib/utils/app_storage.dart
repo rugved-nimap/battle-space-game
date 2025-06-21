@@ -21,6 +21,9 @@ class StorageKey {
   static String storageName = "battlespace";
   static String highScore = "high_score";
   static String userName = "username";
+  static String userAvatar = "user_avatar";
+  static String userCoins = "user_coins";
   static String musicSetting = "music_setting";
   static String sfxSetting = "sfx_setting";
+  static String playerSprite = "player_sprite";
 }
