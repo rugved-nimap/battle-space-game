@@ -39,6 +39,7 @@ dependencies:
   flame_audio: ^2.10.6
   get: ^4.6.6
   get_storage: ^2.1.1
+  dio: ^5.8.0+1
 
 dev_dependencies:
   flutter_test:
@@ -84,6 +85,7 @@ flutter:
     - assets/images/enemy_spaceship_sprite/
     - assets/images/avatar/
     - assets/images/
+    - assets/gif/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

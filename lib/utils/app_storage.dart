@@ -26,4 +26,6 @@ class StorageKey {
   static String musicSetting = "music_setting";
   static String sfxSetting = "sfx_setting";
   static String playerSprite = "player_sprite";
+  static String accessToken = "access_token";
+  static String userId = "user_id";
 }

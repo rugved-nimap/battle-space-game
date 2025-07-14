@@ -8,15 +8,19 @@ class AppTextField extends StatelessWidget {
     this.hint,
     this.controller,
     this.onChanged,
+    this.validator,
+    this.obscureText = false,
   });
 
   final String? label, hint;
   final TextEditingController? controller;
   final Function(dynamic)? onChanged;
+  final String? Function(String?)? validator;
+  final bool obscureText;
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
       controller: controller,
       onChanged: onChanged,
       style: const TextStyle(color: Colors.white),
@@ -34,6 +38,8 @@ class AppTextField extends StatelessWidget {
         labelStyle: const TextStyle(color: Colors.blueGrey),
         floatingLabelStyle: TextStyle(color: Colors.indigoAccent.shade100),
       ),
+      obscureText: obscureText,
+      validator: validator,
     );
   }
 

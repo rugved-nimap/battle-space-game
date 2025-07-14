@@ -40,6 +40,10 @@ class AssetUtils {
   static String explosionSound = "explosion.mp3";
   static String firingSound = "fire.wav";
 
+  // GIF
+  static String loginGif = "assets/gif/login.gif";
+
+
   static List<String> avatarList = [
     avatar1,
     avatar2,

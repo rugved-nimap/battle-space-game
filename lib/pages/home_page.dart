@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_game/controller/global_controller.dart';
 import 'package:flutter_game/pages/game_widget_page.dart';
@@ -52,23 +53,40 @@ class HomePage extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Container(
-                    height: 30,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.blueGrey.shade50.withValues(alpha: 0.15),
-                    ),
-                    clipBehavior: Clip.hardEdge,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Image.asset(AssetUtils.coin, scale: 22).paddingOnly(left: 4, right: 2),
-                        Text(
-                          "${controller.userCoins}",
-                          style: const TextStyle(color: Colors.white, fontSize: 14),
-                        ).paddingOnly(left: 2, right: 10),
-                      ],
-                    ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Container(
+                        height: 30,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.blueGrey.shade50.withValues(alpha: 0.15),
+                        ),
+                        clipBehavior: Clip.hardEdge,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Image.asset(AssetUtils.coin, scale: 22).paddingOnly(left: 4, right: 2),
+                            Text(
+                              "${controller.userCoins}",
+                              style: const TextStyle(color: Colors.white, fontSize: 14),
+                            ).paddingOnly(left: 2, right: 10),
+                          ],
+                        ),
+                      ),
+                      CupertinoButton(
+                        onPressed: () {
+                          controller.loginBottomSheet();
+                        },
+                        sizeStyle: CupertinoButtonSize.small,
+                        padding: EdgeInsets.zero,
+                        child: Image.asset(
+                          AssetUtils.loginGif,
+                          width: 50,
+                          height: 50,
+                        ),
+                      )
+                    ],
                   ),
                 ],
               ).marginSymmetric(vertical: kToolbarHeight - 10, horizontal: 16),

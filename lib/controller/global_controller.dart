@@ -1,11 +1,16 @@
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_game/repository/app_repository.dart';
+import 'package:flutter_game/reusable_widgets/app_snack_bar.dart';
 import 'package:flutter_game/reusable_widgets/app_text_field.dart';
+import 'package:flutter_game/reusable_widgets/loader.dart';
 import 'package:flutter_game/utils/app_storage.dart';
 import 'package:flutter_game/utils/asset_utils.dart';
 import 'package:get/get.dart';
 
 class GlobalController extends GetxController {
+  final repository = AppRepository();
+
   bool isBgOn = true;
   bool isSfxOn = true;
   late AudioPool fireSoundPool;
@@ -245,5 +250,98 @@ class GlobalController extends GetxController {
         },
       ),
     );
+  }
+
+  void loginBottomSheet() async {
+    final TextEditingController emailTextController = TextEditingController();
+    final TextEditingController passTextController = TextEditingController();
+    final GlobalKey<FormState> formKey = GlobalKey();
+
+    await Get.bottomSheet(
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      backgroundColor: const Color(0xff141D1E),
+      clipBehavior: Clip.hardEdge,
+      Form(
+        key: formKey,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            spacing: 10,
+            children: [
+              Container(
+                width: 60,
+                height: 8,
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.blueGrey.shade800),
+              ),
+              const Text(
+                "LOGIN",
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 30),
+              ),
+              AppTextField(
+                controller: emailTextController,
+                label: "EMAIL",
+                validator: (v) {
+                  if (v == null || !v.isEmail) return "Please enter email";
+                  return null;
+                },
+              ),
+              AppTextField(
+                controller: passTextController,
+                label: "PASSWORD",
+                obscureText: true,
+                validator: (v) {
+                  if (v == null || v.isEmpty) return "Please enter password";
+                  return null;
+                },
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  if (formKey.currentState?.validate() ?? (emailTextController.text.isEmail || passTextController.text.isNotEmpty)) {
+                    loginApi(emailTextController.text, passTextController.text);
+                  }
+                },
+                style: ButtonStyle(
+                  shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+                  backgroundColor: const WidgetStatePropertyAll(Colors.indigoAccent),
+                  fixedSize: const WidgetStatePropertyAll(Size.fromWidth(double.maxFinite)),
+                ),
+                child: const Text(
+                  "LOGIN",
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ).paddingAll(16),
+    );
+  }
+
+  Future<void> loginApi(String email, pass) async {
+    if (Get.context != null) FocusScope.of(Get.context!).unfocus();
+
+    Loader.instance.show();
+    try {
+      dynamic body = {"email": email, "password": pass};
+      final result = await repository.login(body);
+      if (result != null) {
+        dynamic userData = result['user'];
+        dynamic token = result['token'];
+        AppStorage.setValue(StorageKey.accessToken, token);
+
+        AppStorage.setValue(StorageKey.userId, userData['_id']);
+        AppStorage.setValue(StorageKey.userName, userData['username']);
+        AppStorage.setValue(StorageKey.userCoins, userData['money']);
+        AppStorage.setValue(StorageKey.highScore, userData['highScore']);
+
+        getUserDetails();
+        Loader.instance.hide();
+        Get.back();
+        AppSnackBar.success("Login Successfully");
+      }
+    } catch (e) {
+      Loader.instance.hide();
+      debugPrint("Error while login: $e");
+    }
   }
 }
