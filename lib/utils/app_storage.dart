@@ -28,4 +28,5 @@ class StorageKey {
   static String playerSprite = "player_sprite";
   static String accessToken = "access_token";
   static String userId = "user_id";
+  static String email = "email";
 }

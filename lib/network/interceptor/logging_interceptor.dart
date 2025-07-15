@@ -6,6 +6,7 @@ class LoggingInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     log("onRequest URI => ${options.uri}");
+    log("onRequest HEADER => ${options.headers}");
     log("onRequest REQUEST DATA => ${options.data}");
     super.onRequest(options, handler);
   }
@@ -22,8 +23,8 @@ class LoggingInterceptor extends Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) {
     log("onError URI[${err.response?.statusCode}] => ${err.response?.requestOptions.uri}");
     log("onError HEADER => ${err.response?.headers}");
+    log("onError DATA => ${err.response?.data}");
     log("onError MESSAGE => ${err.message}");
-    log("onError STACKTRACE => ${err.stackTrace}");
     super.onError(err, handler);
   }
 }

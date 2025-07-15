@@ -10,19 +10,21 @@ class AppTextField extends StatelessWidget {
     this.onChanged,
     this.validator,
     this.obscureText = false,
+    this.readOnly = false,
   });
 
   final String? label, hint;
   final TextEditingController? controller;
   final Function(dynamic)? onChanged;
   final String? Function(String?)? validator;
-  final bool obscureText;
+  final bool obscureText, readOnly;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
       onChanged: onChanged,
+      readOnly: readOnly,
       style: const TextStyle(color: Colors.white),
       inputFormatters: [
         FilteringTextInputFormatter.singleLineFormatter,

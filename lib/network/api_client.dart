@@ -18,7 +18,7 @@ class ApiClient {
     _dio = Dio(BaseOptions(
       baseUrl: _baseurl,
       headers: {
-        if (AppStorage.valueFor(StorageKey.accessToken) != null) "Authorization": AppStorage.valueFor(StorageKey.accessToken),
+        if (AppStorage.valueFor(StorageKey.accessToken) != null) "Authorization": "Bearer ${AppStorage.valueFor(StorageKey.accessToken)}",
       },
       connectTimeout: const Duration(seconds: 15),
       receiveTimeout: const Duration(seconds: 15),
@@ -32,7 +32,7 @@ class ApiClient {
   }
 
   void addHeaderToDio() {
-    _dio.options.headers.addAll({"Authorization": AppStorage.valueFor(StorageKey.accessToken)});
+    _dio.options.headers.addAll({"Authorization": "Bearer ${AppStorage.valueFor(StorageKey.accessToken)}"});
   }
 
   Future<dynamic> get(String endpoint, {Map<String, dynamic> query = const {}, Map? data}) async {

@@ -16,4 +16,19 @@ class AppSnackBar {
       ),
     );
   }
+
+  static void error(String message) {
+    Get.showSnackbar(
+      GetSnackBar(
+        message: message,
+        backgroundColor: Colors.redAccent,
+        duration: const Duration(seconds: 1),
+        snackPosition: SnackPosition.TOP,
+        snackStyle: SnackStyle.FLOATING,
+        padding: const EdgeInsets.all(10),
+        borderRadius: 5,
+        margin: const EdgeInsets.symmetric(horizontal: 12),
+      ),
+    );
+  }
 }

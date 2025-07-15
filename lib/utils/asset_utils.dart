@@ -42,6 +42,7 @@ class AssetUtils {
 
   // GIF
   static String loginGif = "assets/gif/login.gif";
+  static String signUpGif = "assets/gif/signup.gif";
 
 
   static List<String> avatarList = [
