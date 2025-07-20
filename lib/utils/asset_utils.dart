@@ -7,6 +7,8 @@ class AssetUtils {
   // Health Bar
   static String health = "assets/images/heart.png";
 
+  // Helper Spacecraft
+  static String helperSpacecraft = "assets/images/helper_spacecraft.png";
 
   // Avatar
   static String playerSprite1 = "assets/images/player_spaceship_sprite/player_sprite1.png";

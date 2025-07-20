@@ -4,6 +4,8 @@ import 'package:flame/game.dart';
 import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter_game/component/enemy.dart';
+import 'package:flutter_game/component/health_power.dart';
+import 'package:flutter_game/component/helper_power.dart';
 import 'package:flutter_game/component/player.dart';
 import 'package:flutter_game/component/ui_component.dart';
 import 'package:flutter_game/controller/global_controller.dart';
@@ -24,6 +26,9 @@ class MyGame extends FlameGame with HasCollisionDetection {
 
   double enemyCoolDown = 2;
   double enemyLastSpawn = 0.0;
+
+  double powerCoolDown = 10;
+  double powerLastSpawn = 0.0;
 
   bool initialized = false;
   bool gameOver = false;
@@ -76,6 +81,26 @@ class MyGame extends FlameGame with HasCollisionDetection {
     }
 
     if (!gameOver) {
+      if (powerLastSpawn >= powerCoolDown) {
+        int xPos = Random().nextInt(size.x.round() - 50);
+        late final SpriteComponent power;
+        if (xPos.isEven) {
+          power = HealthPower(
+            size: Vector2(50, 50),
+            pos: Vector2(xPos.toDouble(), -50),
+            healthBar: uiComponent.healthBar,
+          );
+
+        } else {
+          power = HelperPower(
+            size: Vector2(50, 50),
+            pos: Vector2(xPos.toDouble(), -50),
+          );
+        }
+        add(power);
+        powerLastSpawn = 0;
+      }
+
       if (enemyLastSpawn >= enemyCoolDown) {
         int xPos = Random().nextInt(size.x.round() - 50);
         final enemy = Enemy(
@@ -88,6 +113,7 @@ class MyGame extends FlameGame with HasCollisionDetection {
         enemyLastSpawn = 0;
       }
 
+      powerLastSpawn += dt;
       enemyLastSpawn += dt;
       distance += dt;
 
