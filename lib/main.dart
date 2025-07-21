@@ -6,11 +6,13 @@ import 'package:flutter_game/utils/app_storage.dart';
 import 'package:flutter_game/utils/app_theme.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init(StorageKey.storageName);
   ApiClient.instance.init();
+  await MobileAds.instance.initialize();
   runApp(const MyApp());
 }
 

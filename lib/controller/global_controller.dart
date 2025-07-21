@@ -21,6 +21,7 @@ class GlobalController extends GetxController {
   late AudioPool explosionSoundPool;
 
   num highScore = 0;
+  String? userId;
   String userName = "GUEST";
   String userAvatar = AssetUtils.avatar1;
   num userCoins = 0;
@@ -51,6 +52,7 @@ class GlobalController extends GetxController {
   }
 
   void getUserDetails() async {
+    userId = AppStorage.valueFor(StorageKey.userId);
     userName = AppStorage.valueFor(StorageKey.userName) ?? "GUEST";
     userAvatar = AppStorage.valueFor(StorageKey.userAvatar) ?? AssetUtils.avatar1;
     userCoins = AppStorage.valueFor(StorageKey.userCoins) ?? 0;
@@ -309,6 +311,15 @@ class GlobalController extends GetxController {
       await repository.updateUser(body);
     } catch (e) {
       debugPrint("Error in sign up: $e");
+    }
+  }
+
+  Future<dynamic> getRank(String score) async {
+    try {
+      final result = await repository.getRank(userId, score);
+      return result;
+    } catch (e) {
+      debugPrint("Error in getting rank: $e");
     }
   }
 }

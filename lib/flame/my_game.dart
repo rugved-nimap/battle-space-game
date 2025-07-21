@@ -168,6 +168,7 @@ class MyGame extends FlameGame with HasCollisionDetection {
       ),
     );
     remove(_player);
+    controller.getRank(score.toString());
     uiComponent.gameOver();
   }
 

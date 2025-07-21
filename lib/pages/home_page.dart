@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_game/controller/global_controller.dart';
 import 'package:flutter_game/pages/game_widget_page.dart';
+import 'package:flutter_game/reusable_widgets/banner_ads_widget.dart';
 import 'package:flutter_game/reusable_widgets/sprite_button.dart';
 import 'package:flutter_game/utils/app_storage.dart';
 import 'package:flutter_game/utils/asset_utils.dart';
@@ -252,6 +253,7 @@ class HomePage extends StatelessWidget {
               ),
             ],
           ),
+          bottomNavigationBar: const BannerAdsWidget(),
         );
       },
     );
