@@ -6,6 +6,7 @@ import 'package:flutter_game/controller/global_controller.dart';
 import 'package:flutter_game/pages/game_widget_page.dart';
 import 'package:flutter_game/reusable_widgets/banner_ads_widget.dart';
 import 'package:flutter_game/reusable_widgets/sprite_button.dart';
+import 'package:flutter_game/services/google_ads_service.dart';
 import 'package:flutter_game/utils/app_storage.dart';
 import 'package:flutter_game/utils/asset_utils.dart';
 import 'package:get/get.dart';
@@ -115,6 +116,10 @@ class HomePage extends StatelessWidget {
                       onPressed: () {
                         Get.to(() => const GameWidgetPage())?.then((value) {
                           controller.update();
+                          if (controller.showAds == true) {
+                            GoogleAdsService.instance.interstitialAds();
+                            controller.showAds = false;
+                          }
                         });
                       },
                       style: ButtonStyle(
@@ -153,7 +158,9 @@ class HomePage extends StatelessWidget {
                     const SizedBox(height: 8),
                     ElevatedButton(
                       onPressed: () {
-                        exit(0);
+                        GoogleAdsService.instance.interstitialAds().then((value) {
+                          exit(0);
+                        });
                       },
                       style: ButtonStyle(
                         backgroundColor: WidgetStatePropertyAll(Colors.indigoAccent.shade100),

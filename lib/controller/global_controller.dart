@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_game/network/api_client.dart';
@@ -8,6 +10,7 @@ import 'package:flutter_game/reusable_widgets/loader.dart';
 import 'package:flutter_game/reusable_widgets/login_bottom_sheet.dart';
 import 'package:flutter_game/reusable_widgets/sign_up_bottom_sheet.dart';
 import 'package:flutter_game/reusable_widgets/user_profile_dialog.dart';
+import 'package:flutter_game/services/google_ads_service.dart';
 import 'package:flutter_game/utils/app_storage.dart';
 import 'package:flutter_game/utils/asset_utils.dart';
 import 'package:get/get.dart';
@@ -27,10 +30,25 @@ class GlobalController extends GetxController {
   num userCoins = 0;
   String playerSprite = AssetUtils.playerSprite1;
 
+  late Timer timer;
+  bool showAds = false;
+
   @override
   void onInit() {
     super.onInit();
     getUserDetails();
+    timer = Timer(
+      const Duration(minutes: 1),
+      () {
+        if (Get.context != null) {
+          if ("/HomePage" == ModalRoute.of(Get.context!)?.settings.name) {
+            GoogleAdsService.instance.rewardedAds(onUserEarnedReward: (ad, reward) {});
+          }
+        } else {
+          showAds = true;
+        }
+      },
+    );
   }
 
   @override
@@ -42,6 +60,8 @@ class GlobalController extends GetxController {
           userProfileDialog(showDiscardBtn: false);
         }
       });
+    } else {
+      GoogleAdsService.instance.onAppOpenAds();
     }
   }
 
