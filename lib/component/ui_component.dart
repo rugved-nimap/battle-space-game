@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_game/component/health_bar.dart';
 import 'package:flutter_game/controller/global_controller.dart';
 import 'package:flutter_game/flame/my_game.dart';
+import 'package:flutter_game/reusable_widgets/game_over_dialog.dart';
+import 'package:flutter_game/services/google_ads_service.dart';
 import 'package:flutter_game/utils/app_storage.dart';
 import 'package:get/get.dart';
 
@@ -207,17 +209,44 @@ class UiComponent extends Component with HasGameRef {
   }
 
   void gameOver() {
-    add(gameOverText);
-    add(gameOverScoreText);
-    add(gameOverDistanceText);
-    add(gameOverBackButton);
-    add(gameOverRestartButton);
+    Get.dialog(
+      barrierDismissible: false,
+      GameOverDialog(
+        score: score,
+        distance: distance.toPrecision(2),
+        onCancel: () {
+          Get.back();
+          Get.back();
+        },
+        onContinue: () async {
+          await GoogleAdsService.instance.rewardedAds(
+            onUserEarnedReward: (ad, reward) {
+              Get.back();
+              continueGame();
+            },
+          );
+        },
+        onRestart: () {
+          Get.back();
+          restartGame();
+        },
+      ),
+    );
+
+    // add(gameOverText);
+    // add(gameOverScoreText);
+    // add(gameOverDistanceText);
+    // add(gameOverBackButton);
+    // add(gameOverRestartButton);
 
     final num bestScore = AppStorage.valueFor(StorageKey.highScore) ?? 0;
 
+    final controller = Get.find<GlobalController>();
+    controller.userCoins += score * 5;
+    AppStorage.setValue(StorageKey.userCoins, controller.userCoins);
+
     if (score > bestScore) {
       AppStorage.setValue(StorageKey.highScore, score);
-      final controller = Get.find<GlobalController>();
       controller.highScore = score;
       // controller.update();
     }
@@ -225,11 +254,14 @@ class UiComponent extends Component with HasGameRef {
 
   void moveToMenuPage() {
     Get.back();
-    // Navigator.pop(context);
   }
 
   void restartGame() {
     (gameRef as MyGame).restart();
+  }
+
+  void continueGame() {
+    (gameRef as MyGame).continueGame(score, distance);
   }
 
   TextComponent buttonText(String text) {

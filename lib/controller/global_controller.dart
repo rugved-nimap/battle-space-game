@@ -37,18 +37,19 @@ class GlobalController extends GetxController {
   void onInit() {
     super.onInit();
     getUserDetails();
-    timer = Timer(
-      const Duration(minutes: 1),
-      () {
-        if (Get.context != null) {
-          if ("/HomePage" == ModalRoute.of(Get.context!)?.settings.name) {
-            GoogleAdsService.instance.rewardedAds(onUserEarnedReward: (ad, reward) {});
-          }
-        } else {
-          showAds = true;
-        }
-      },
-    );
+    // timer = Timer.periodic(
+    //   const Duration(seconds: 1),
+    //   (timer) {
+    //     print("ModalRoute.of(Get.context!)?.settings.name => ${Get.context} ${ModalRoute.of(Get.context!)?.settings.name}");
+    //     // if (Get.context != null) {
+    //     //   if ("/HomePage" == ModalRoute.of(Get.context!)?.settings.name) {
+    //     //     GoogleAdsService.instance.rewardedAds(onUserEarnedReward: (ad, reward) {});
+    //     //   }
+    //     // } else {
+    //     //   showAds = true;
+    //     // }
+    //   },
+    // );
   }
 
   @override

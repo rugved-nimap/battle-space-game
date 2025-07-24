@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_game/controller/global_controller.dart';
 import 'package:flutter_game/pages/game_widget_page.dart';
 import 'package:flutter_game/reusable_widgets/banner_ads_widget.dart';
+import 'package:flutter_game/reusable_widgets/game_over_dialog.dart';
 import 'package:flutter_game/reusable_widgets/sprite_button.dart';
 import 'package:flutter_game/services/google_ads_service.dart';
 import 'package:flutter_game/utils/app_storage.dart';

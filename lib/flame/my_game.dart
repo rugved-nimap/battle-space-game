@@ -172,6 +172,16 @@ class MyGame extends FlameGame with HasCollisionDetection {
     uiComponent.gameOver();
   }
 
+  Future<void> continueGame(num score, num distance) async {
+    removeAll(children);
+
+    gameOver = false;
+    score = score;
+    distance = distance;
+
+    onLoad();
+  }
+
   Future<void> restart() async {
     removeAll(children);
 

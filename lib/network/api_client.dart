@@ -20,9 +20,9 @@ class ApiClient {
       headers: {
         if (AppStorage.valueFor(StorageKey.accessToken) != null) "Authorization": "Bearer ${AppStorage.valueFor(StorageKey.accessToken)}",
       },
-      connectTimeout: const Duration(seconds: 15),
-      receiveTimeout: const Duration(seconds: 15),
-      sendTimeout: const Duration(seconds: 15),
+      connectTimeout: const Duration(seconds: 10),
+      receiveTimeout: const Duration(seconds: 10),
+      sendTimeout: const Duration(seconds: 10),
     ));
 
 
@@ -35,9 +35,9 @@ class ApiClient {
     _dio.options.headers.addAll({"Authorization": "Bearer ${AppStorage.valueFor(StorageKey.accessToken)}"});
   }
 
-  Future<dynamic> get(String endpoint, {Map<String, dynamic> query = const {}, Map? data}) async {
+  Future<dynamic> get(String endpoint, {Map<String, dynamic> query = const {}, Map? data, Function(int, int)? onReceiveProgress}) async {
     try {
-      final response = await _dio.get(endpoint, queryParameters: query, data: data);
+      final response = await _dio.get(endpoint, queryParameters: query, data: data, onReceiveProgress: onReceiveProgress);
       return response.data;
     } catch (e) {
       return _handleError(e);

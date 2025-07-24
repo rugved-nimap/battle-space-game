@@ -47,9 +47,9 @@ class AppRepository {
     }
   }
 
-  Future<dynamic> getRank(String? userId, String score) async {
+  Future<dynamic> getRank(String? userId, String score, {Function(int, int)? onReceiveProgress}) async {
     try {
-      final response = await ApiClient.instance.get("/ranking/user/$userId/score/$score");
+      final response = await ApiClient.instance.get("/ranking/user/$userId/score/$score", onReceiveProgress: onReceiveProgress);
       return response;
     } catch (e) {
       return Future.error(e);
