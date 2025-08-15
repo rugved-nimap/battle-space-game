@@ -4,8 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_game/controller/global_controller.dart';
 import 'package:flutter_game/pages/game_widget_page.dart';
+import 'package:flutter_game/reusable_widgets/app_snack_bar.dart';
 import 'package:flutter_game/reusable_widgets/banner_ads_widget.dart';
-import 'package:flutter_game/reusable_widgets/game_over_dialog.dart';
 import 'package:flutter_game/reusable_widgets/sprite_button.dart';
 import 'package:flutter_game/services/google_ads_service.dart';
 import 'package:flutter_game/utils/app_storage.dart';
@@ -59,34 +59,48 @@ class HomePage extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Container(
-                        height: 30,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: Colors.blueGrey.shade50.withValues(alpha: 0.15),
-                        ),
-                        clipBehavior: Clip.hardEdge,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Image.asset(AssetUtils.coin, scale: 22).paddingOnly(left: 4, right: 2),
-                            Text(
-                              "${controller.userCoins}",
-                              style: const TextStyle(color: Colors.white, fontSize: 14),
-                            ).paddingOnly(left: 2, right: 10),
-                          ],
+                      InkWell(
+                        onTap: () {
+                          GoogleAdsService.instance.rewardedAds(onUserEarnedReward: (ad, reward) {
+                            AppSnackBar.success("10 coins are added to your wallet.");
+                            controller.userCoins += 10;
+                            controller.update();
+                            controller.updateUser(email: AppStorage.valueFor(StorageKey.email), money: controller.userCoins.toString());
+                          });
+                          // Get.to(() => const AddMoneyScreen(), transition: Transition.rightToLeft);
+                        },
+                        child: Container(
+                          height: 30,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.blueGrey.shade50.withValues(alpha: 0.15),
+                          ),
+                          clipBehavior: Clip.hardEdge,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Image.asset(AssetUtils.coin, scale: 22).paddingOnly(left: 4, right: 2),
+                              Text(
+                                "${controller.userCoins}",
+                                style: const TextStyle(color: Colors.white, fontSize: 14),
+                              ).paddingOnly(left: 2, right: 10),
+                            ],
+                          ),
                         ),
                       ),
-                      CupertinoButton(
-                        onPressed: () {
-                          controller.loginBottomSheet();
-                        },
-                        sizeStyle: CupertinoButtonSize.small,
-                        padding: EdgeInsets.zero,
-                        child: Image.asset(
-                          AssetUtils.loginGif,
-                          width: 50,
-                          height: 50,
+                      Visibility(
+                        visible: AppStorage.valueFor(StorageKey.accessToken) == null,
+                        child: CupertinoButton(
+                          onPressed: () {
+                            controller.loginBottomSheet();
+                          },
+                          sizeStyle: CupertinoButtonSize.small,
+                          padding: EdgeInsets.zero,
+                          child: Image.asset(
+                            AssetUtils.loginGif,
+                            width: 50,
+                            height: 50,
+                          ),
                         ),
                       )
                     ],

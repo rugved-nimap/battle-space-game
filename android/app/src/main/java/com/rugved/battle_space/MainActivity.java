@@ -1,4 +1,4 @@
-package com.example.flutter_game;
+package com.rugved.battle_space;
 
 import io.flutter.embedding.android.FlutterActivity;
 

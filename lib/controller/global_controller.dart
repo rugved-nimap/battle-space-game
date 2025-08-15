@@ -36,7 +36,7 @@ class GlobalController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    getUserDetails();
+    getUserDetails(callApi: true);
     // timer = Timer.periodic(
     //   const Duration(seconds: 1),
     //   (timer) {
@@ -72,16 +72,43 @@ class GlobalController extends GetxController {
     super.dispose();
   }
 
-  void getUserDetails() async {
-    userId = AppStorage.valueFor(StorageKey.userId);
-    userName = AppStorage.valueFor(StorageKey.userName) ?? "GUEST";
+  void getUserDetails({bool callApi = false}) async {
+    // This data are not store in server and is store locally so fetch it.
     userAvatar = AppStorage.valueFor(StorageKey.userAvatar) ?? AssetUtils.avatar1;
-    userCoins = AppStorage.valueFor(StorageKey.userCoins) ?? 0;
-    highScore = AppStorage.valueFor(StorageKey.highScore) ?? 0;
     isBgOn = AppStorage.valueFor(StorageKey.musicSetting) ?? true;
     isSfxOn = AppStorage.valueFor(StorageKey.sfxSetting) ?? true;
     playerSprite = AppStorage.valueFor(StorageKey.playerSprite) ?? AssetUtils.playerSprite1;
 
+    // Get latest updated data from Server
+    if (AppStorage.valueFor(StorageKey.accessToken) != null && callApi) {
+      try {
+        final response = await getUser();
+        if (response != null) {
+          userId = response['user']['_id'];
+          userName = response['user']['username'];
+          userCoins = response['user']['money'];
+          highScore = response['user']['highScore'];
+
+          AppStorage.setValue(StorageKey.userId, userId);
+          AppStorage.setValue(StorageKey.userName, userName);
+          AppStorage.setValue(StorageKey.userCoins, userCoins);
+          AppStorage.setValue(StorageKey.highScore, highScore);
+          update();
+          initializedAudio();
+        }
+
+        return;
+      } catch (e) {
+        debugPrint("Error in getting user data: $e");
+      }
+    }
+
+    // If API gets failed fetch the local data.
+    userId = AppStorage.valueFor(StorageKey.userId);
+    userName = AppStorage.valueFor(StorageKey.userName) ?? "GUEST";
+    userCoins = AppStorage.valueFor(StorageKey.userCoins) ?? 0;
+    highScore = AppStorage.valueFor(StorageKey.highScore) ?? 0;
+    update();
     initializedAudio();
   }
 
@@ -202,6 +229,9 @@ class GlobalController extends GetxController {
       SignUpBottomSheet(
         register: signUp,
         verifyOtp: verifyOtp,
+        onLoginTap: () {
+          loginBottomSheet();
+        },
       ),
     );
 
@@ -280,6 +310,7 @@ class GlobalController extends GetxController {
     } catch (e) {
       AppSnackBar.error("$e");
       debugPrint("Error in sign up: $e");
+      return Future.error(e);
     }
   }
 
@@ -298,7 +329,8 @@ class GlobalController extends GetxController {
       }
     } catch (e) {
       AppSnackBar.error("$e");
-      debugPrint("Error in sign up: $e");
+      debugPrint("Error in verify otp: $e");
+      return Future.error(e);
     }
   }
 
@@ -317,12 +349,14 @@ class GlobalController extends GetxController {
     } catch (e) {
       Loader.instance.hide();
       AppSnackBar.error("$e");
-      debugPrint("Error in sign up: $e");
+      debugPrint("Error in adding user: $e");
+      return Future.error(e);
     }
   }
 
   Future<void> updateUser({required String email, String? username, String? money, String? highScore}) async {
     try {
+      if (AppStorage.valueFor(StorageKey.accessToken) == null) return;
       dynamic body = {
         "email": email,
         if (username != null) "username": username,
@@ -331,13 +365,23 @@ class GlobalController extends GetxController {
       };
       await repository.updateUser(body);
     } catch (e) {
-      debugPrint("Error in sign up: $e");
+      debugPrint("Error in updating user: $e");
+      return Future.error(e);
     }
   }
 
   Future<dynamic> getRank(String score) async {
     try {
       final result = await repository.getRank(userId, score);
+      return result;
+    } catch (e) {
+      debugPrint("Error in getting rank: $e");
+    }
+  }
+
+  Future<dynamic> getUser() async {
+    try {
+      final result = await repository.getUser();
       return result;
     } catch (e) {
       debugPrint("Error in getting rank: $e");

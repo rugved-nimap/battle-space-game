@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flame/components.dart';
-import 'package:flame/input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_game/component/health_bar.dart';
 import 'package:flutter_game/controller/global_controller.dart';
@@ -28,8 +27,9 @@ class UiComponent extends Component with HasGameRef {
   late TextComponent gameOverText;
   late TextComponent gameOverScoreText;
   late TextComponent gameOverDistanceText;
-  late ButtonComponent gameOverRestartButton;
-  late ButtonComponent gameOverBackButton;
+
+  // late ButtonComponent gameOverRestartButton;
+  // late ButtonComponent gameOverBackButton;
   late PositionComponent healthBar;
 
   @override
@@ -109,80 +109,80 @@ class UiComponent extends Component with HasGameRef {
       ),
       priority: 5,
     );
-
-    gameOverDistanceText.position = Vector2((screenSize.x / 2) - (gameOverDistanceText.width / 2), gameOverScoreText.position.y + 40);
-
-    final uiCancelText = buttonText("Cancel");
-    gameOverBackButton = ButtonComponent(
-      button: RectangleComponent(
-        size: Vector2(100, 40),
-        paint: Paint()..color = Colors.grey.shade100.withValues(alpha: 0.5),
-        children: [
-          PositionComponent(
-            position: Vector2(50 - (uiCancelText.width / 2), 20 - (uiCancelText.height / 2)),
-            children: [uiCancelText],
-          ),
-        ],
-        priority: 0,
-      ),
-      // buttonDown: RectangleComponent(
-      //   size: Vector2(100, 40),
-      //   paint: Paint()..color = Colors.grey.shade800.withOpacity(1),
-      //   children: [
-      //     PositionComponent(
-      //       position: Vector2(50 - (uiCancelText.width / 2), 20 - (uiCancelText.height / 2)),
-      //       children: [uiCancelText],
-      //     ),
-      //   ],
-      // ),
-      onPressed: () {
-        moveToMenuPage();
-      },
-      size: Vector2(100, 40),
-      priority: 5,
-    );
-
-    final uiRestartText = buttonText("Restart");
-    gameOverRestartButton = ButtonComponent(
-      button: RectangleComponent(
-        size: Vector2(100, 40),
-        paint: Paint()..color = Colors.lightGreenAccent.shade100.withValues(alpha: 0.5),
-        children: [
-          PositionComponent(
-            position: Vector2(
-              50 - (uiRestartText.width / 2),
-              20 - (uiRestartText.height / 2),
-            ),
-            children: [uiRestartText],
-          ),
-        ],
-      ),
-      // buttonDown: RectangleComponent(
-      //   size: Vector2(100, 40),
-      //   paint: Paint()..color = Colors.lightGreenAccent.shade700.withOpacity(1),
-      //   children: [
-      //     PositionComponent(
-      //       position: Vector2(50 - (uiRestartText.width / 2), 20 - (uiRestartText.height / 2)),
-      //       children: [uiRestartText],
-      //     ),
-      //   ],
-      // ),
-      onPressed: () {
-        restartGame();
-      },
-      size: Vector2(100, 40),
-      priority: 5,
-    );
-
-    gameOverBackButton.position = Vector2(
-      ((screenSize.x / 2) - gameOverBackButton.width) - 20,
-      gameOverDistanceText.position.y + 40,
-    );
-
-    gameOverRestartButton.position = Vector2(
-      (screenSize.x / 2) + 20,
-      gameOverDistanceText.position.y + 40,
-    );
+    //
+    // gameOverDistanceText.position = Vector2((screenSize.x / 2) - (gameOverDistanceText.width / 2), gameOverScoreText.position.y + 40);
+    //
+    // final uiCancelText = buttonText("Cancel");
+    // gameOverBackButton = ButtonComponent(
+    //   button: RectangleComponent(
+    //     size: Vector2(100, 40),
+    //     paint: Paint()..color = Colors.grey.shade100.withValues(alpha: 0.5),
+    //     children: [
+    //       PositionComponent(
+    //         position: Vector2(50 - (uiCancelText.width / 2), 20 - (uiCancelText.height / 2)),
+    //         children: [uiCancelText],
+    //       ),
+    //     ],
+    //     priority: 0,
+    //   ),
+    //   // buttonDown: RectangleComponent(
+    //   //   size: Vector2(100, 40),
+    //   //   paint: Paint()..color = Colors.grey.shade800.withOpacity(1),
+    //   //   children: [
+    //   //     PositionComponent(
+    //   //       position: Vector2(50 - (uiCancelText.width / 2), 20 - (uiCancelText.height / 2)),
+    //   //       children: [uiCancelText],
+    //   //     ),
+    //   //   ],
+    //   // ),
+    //   onPressed: () {
+    //     moveToMenuPage();
+    //   },
+    //   size: Vector2(100, 40),
+    //   priority: 5,
+    // );
+    //
+    // final uiRestartText = buttonText("Restart");
+    // gameOverRestartButton = ButtonComponent(
+    //   button: RectangleComponent(
+    //     size: Vector2(100, 40),
+    //     paint: Paint()..color = Colors.lightGreenAccent.shade100.withValues(alpha: 0.5),
+    //     children: [
+    //       PositionComponent(
+    //         position: Vector2(
+    //           50 - (uiRestartText.width / 2),
+    //           20 - (uiRestartText.height / 2),
+    //         ),
+    //         children: [uiRestartText],
+    //       ),
+    //     ],
+    //   ),
+    //   // buttonDown: RectangleComponent(
+    //   //   size: Vector2(100, 40),
+    //   //   paint: Paint()..color = Colors.lightGreenAccent.shade700.withOpacity(1),
+    //   //   children: [
+    //   //     PositionComponent(
+    //   //       position: Vector2(50 - (uiRestartText.width / 2), 20 - (uiRestartText.height / 2)),
+    //   //       children: [uiRestartText],
+    //   //     ),
+    //   //   ],
+    //   // ),
+    //   onPressed: () {
+    //     restartGame();
+    //   },
+    //   size: Vector2(100, 40),
+    //   priority: 5,
+    // );
+    //
+    // gameOverBackButton.position = Vector2(
+    //   ((screenSize.x / 2) - gameOverBackButton.width) - 20,
+    //   gameOverDistanceText.position.y + 40,
+    // );
+    //
+    // gameOverRestartButton.position = Vector2(
+    //   (screenSize.x / 2) + 20,
+    //   gameOverDistanceText.position.y + 40,
+    // );
 
     healthBar = HealthBar(position: Vector2(screenSize.x - 150, 40))
       ..anchor = Anchor.topRight
@@ -233,12 +233,6 @@ class UiComponent extends Component with HasGameRef {
       ),
     );
 
-    // add(gameOverText);
-    // add(gameOverScoreText);
-    // add(gameOverDistanceText);
-    // add(gameOverBackButton);
-    // add(gameOverRestartButton);
-
     final num bestScore = AppStorage.valueFor(StorageKey.highScore) ?? 0;
 
     final controller = Get.find<GlobalController>();
@@ -248,8 +242,13 @@ class UiComponent extends Component with HasGameRef {
     if (score > bestScore) {
       AppStorage.setValue(StorageKey.highScore, score);
       controller.highScore = score;
-      // controller.update();
     }
+
+    controller.updateUser(
+      email: AppStorage.valueFor(StorageKey.email) ?? "",
+      money: controller.userCoins.toString(),
+      highScore: controller.highScore.toString(),
+    );
   }
 
   void moveToMenuPage() {

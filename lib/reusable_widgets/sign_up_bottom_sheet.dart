@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_game/reusable_widgets/app_text_field.dart';
+import 'package:flutter_game/utils/asset_utils.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
 
 class SignUpBottomSheet extends StatefulWidget {
-  const SignUpBottomSheet({super.key, this.register, this.verifyOtp});
+  const SignUpBottomSheet({super.key, this.register, this.verifyOtp, this.onLoginTap});
 
   final Future Function(String)? register;
   final Future Function(String, String)? verifyOtp;
+  final Function()? onLoginTap;
 
   @override
   State<SignUpBottomSheet> createState() => _SignUpBottomSheetState();
@@ -39,13 +41,31 @@ class _SignUpBottomSheetState extends State<SignUpBottomSheet> {
                 color: Colors.blueGrey.shade800,
               ),
             ),
-            Text(
-              step == 1 ? "SIGNUP" : "VERIFY-OTP",
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 30,
-              ),
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                Text(
+                  step == 1 ? "SIGNUP" : "VERIFY-OTP",
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        Get.back();
+                        widget.onLoginTap?.call();
+                      },
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.asset(AssetUtils.loginGif, width: 40, height: 40),
+                    ),
+                  ],
+                ),
+              ],
             ),
             Visibility(
               visible: step == 1,
@@ -74,11 +94,18 @@ class _SignUpBottomSheetState extends State<SignUpBottomSheet> {
                     setState(() {
                       isLoading = true;
                     });
-                    await widget.register?.call(emailTextController.text);
-                    setState(() {
-                      isLoading = false;
-                      step = 2;
-                    });
+                    if (widget.register != null) {
+                      await widget.register!(emailTextController.text).then((value) {
+                        setState(() {
+                          isLoading = false;
+                          step = 2;
+                        });
+                      }, onError: (err) {
+                        setState(() {
+                          isLoading = false;
+                        });
+                      });
+                    }
                   }
                 } else {
                   if (otpTextController.text.length == 6) {
