@@ -1,0 +1,4 @@
+storePassword=thunderbeast
+keyPassword=thunderbeast
+keyAlias=battle
+storeFile=C:\\jks\\battle-space-keystore.jks
