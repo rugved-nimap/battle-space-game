@@ -29,6 +29,8 @@ class ApiClient {
     _dio.interceptors.addAll([
       LoggingInterceptor(),
     ]);
+
+
   }
 
   void addHeaderToDio() {

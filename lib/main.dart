@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_game/binders/global_binder.dart';
 import 'package:flutter_game/network/api_client.dart';
 import 'package:flutter_game/pages/home_page.dart';
+import 'package:flutter_game/repository/app_repository.dart';
 import 'package:flutter_game/utils/app_storage.dart';
 import 'package:flutter_game/utils/app_theme.dart';
 import 'package:get/get.dart';
@@ -14,10 +15,21 @@ void main() async {
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
-  await GetStorage.init(StorageKey.storageName);
   ApiClient.instance.init();
-  await MobileAds.instance.initialize();
+  try {
+    await GetStorage.init(StorageKey.storageName);
+    await MobileAds.instance.initialize();
+  } catch (err) {
+    debugPrint("Error in starting the app: $err");
+  }
   runApp(const MyApp());
+
+  // TODO: Called this to start the server.
+  try {
+    AppRepository.getUser();
+  } catch (e) {
+    debugPrint("$e");
+  }
 }
 
 class MyApp extends StatelessWidget {

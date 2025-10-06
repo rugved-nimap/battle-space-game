@@ -21,18 +21,19 @@ class GameOverDialog extends StatefulWidget {
   final num distance;
   final Function()? onCancel;
   final Function()? onRestart;
-  final Function()? onContinue;
+  final Future Function()? onContinue;
 
   @override
   State<GameOverDialog> createState() => _GameOverDialogState();
 }
 
 class _GameOverDialogState extends State<GameOverDialog> {
-  final repository = AppRepository();
+  // final repository = AppRepository();
   bool _isLoading = false;
 
   List<dynamic> top10 = [];
   bool isLogin = false;
+  bool loadingAds = false;
 
   @override
   void initState() {
@@ -45,7 +46,8 @@ class _GameOverDialogState extends State<GameOverDialog> {
       setState(() {
         _isLoading = true;
       });
-      final result = await repository.getRank(widget.userId, widget.score.toString());
+      final result =
+          await AppRepository.getRank(widget.userId, widget.score.toString());
       setState(() {
         _isLoading = false;
       });
@@ -62,7 +64,8 @@ class _GameOverDialogState extends State<GameOverDialog> {
       canPop: false,
       child: Center(
         child: Material(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           color: Colors.blueGrey.shade900,
           clipBehavior: Clip.hardEdge,
           type: MaterialType.card,
@@ -72,19 +75,37 @@ class _GameOverDialogState extends State<GameOverDialog> {
             children: [
               const Text(
                 "Game Over",
-                style: TextStyle(fontSize: 35, color: Colors.white, fontWeight: FontWeight.bold, fontFamily: "Digital7"),
+                style: TextStyle(
+                    fontSize: 35,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: "Digital7"),
               ),
               const Text(
                 "Your Score",
-                style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold, fontFamily: "Digital7"),
+                style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: "Digital7"),
               ),
               Text(
                 "${widget.score}",
-                style: const TextStyle(fontSize: 46, color: Colors.lightGreen, fontWeight: FontWeight.bold, fontFamily: "Digital7"),
+                style: const TextStyle(
+                    fontSize: 46,
+                    color: Colors.lightGreen,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: "Digital7"),
               ),
               Text(
                 "Distance: ${widget.distance}",
-                style: const TextStyle(fontSize: 16, color: Colors.amber, fontWeight: FontWeight.bold, fontFamily: "Digital7", decoration: TextDecoration.underline, decorationColor: Colors.amber),
+                style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.amber,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: "Digital7",
+                    decoration: TextDecoration.underline,
+                    decorationColor: Colors.amber),
               ),
               if (!_isLoading && top10.isNotEmpty) ...{
                 Container(
@@ -96,7 +117,11 @@ class _GameOverDialogState extends State<GameOverDialog> {
                     children: [
                       const Text(
                         "Ranks",
-                        style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold, fontFamily: "Digital7"),
+                        style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: "Digital7"),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -108,25 +133,38 @@ class _GameOverDialogState extends State<GameOverDialog> {
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               CircleAvatar(
-                                backgroundImage: AssetImage(AssetUtils.avatarList[Random().nextInt(AssetUtils.avatarList.length)]),
+                                backgroundImage: AssetImage(
+                                    AssetUtils.avatarList[Random().nextInt(
+                                        AssetUtils.avatarList.length)]),
                                 minRadius: 35,
                               ),
                               Container(
                                 decoration: BoxDecoration(
-                                  border: Border.all(width: 3, color: Colors.white),
+                                  border:
+                                      Border.all(width: 3, color: Colors.white),
                                   shape: BoxShape.circle,
                                 ),
                                 padding: const EdgeInsets.all(10),
                                 child: const Text(
                                   "3",
-                                  style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold, fontFamily: "Digital7"),
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Digital7"),
                                 ),
                               ),
                               SizedBox(
                                 width: 60,
                                 child: Text(
-                                  top10.length >= 3 ? "${top10[2]['username']}" : "",
-                                  style: const TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold, fontFamily: "Digital7"),
+                                  top10.length >= 3
+                                      ? "${top10[2]['username']}"
+                                      : "",
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Digital7"),
                                   maxLines: 1,
                                   textAlign: TextAlign.center,
                                   overflow: TextOverflow.ellipsis,
@@ -139,25 +177,38 @@ class _GameOverDialogState extends State<GameOverDialog> {
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               CircleAvatar(
-                                backgroundImage: AssetImage(AssetUtils.avatarList[Random().nextInt(AssetUtils.avatarList.length)]),
+                                backgroundImage: AssetImage(
+                                    AssetUtils.avatarList[Random().nextInt(
+                                        AssetUtils.avatarList.length)]),
                                 minRadius: 45,
                               ),
                               Container(
                                 decoration: BoxDecoration(
-                                  border: Border.all(width: 3, color: Colors.white),
+                                  border:
+                                      Border.all(width: 3, color: Colors.white),
                                   shape: BoxShape.circle,
                                 ),
                                 padding: const EdgeInsets.all(10),
                                 child: const Text(
                                   "1",
-                                  style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold, fontFamily: "Digital7"),
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Digital7"),
                                 ),
                               ),
                               SizedBox(
                                 width: 60,
                                 child: Text(
-                                  top10.isNotEmpty ? "${top10[0]['username']}" : "",
-                                  style: const TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold, fontFamily: "Digital7"),
+                                  top10.isNotEmpty
+                                      ? "${top10[0]['username']}"
+                                      : "",
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Digital7"),
                                   maxLines: 1,
                                   textAlign: TextAlign.center,
                                   overflow: TextOverflow.ellipsis,
@@ -170,25 +221,38 @@ class _GameOverDialogState extends State<GameOverDialog> {
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               CircleAvatar(
-                                backgroundImage: AssetImage(AssetUtils.avatarList[Random().nextInt(AssetUtils.avatarList.length)]),
+                                backgroundImage: AssetImage(
+                                    AssetUtils.avatarList[Random().nextInt(
+                                        AssetUtils.avatarList.length)]),
                                 minRadius: 35,
                               ),
                               Container(
                                 decoration: BoxDecoration(
-                                  border: Border.all(width: 3, color: Colors.white),
+                                  border:
+                                      Border.all(width: 3, color: Colors.white),
                                   shape: BoxShape.circle,
                                 ),
                                 padding: const EdgeInsets.all(10),
                                 child: const Text(
                                   "2",
-                                  style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold, fontFamily: "Digital7"),
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Digital7"),
                                 ),
                               ),
                               SizedBox(
                                 width: 60,
                                 child: Text(
-                                  top10.length >= 2 ? "${top10[1]['username']}" : "",
-                                  style: const TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold, fontFamily: "Digital7"),
+                                  top10.length >= 2
+                                      ? "${top10[1]['username']}"
+                                      : "",
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Digital7"),
                                   maxLines: 1,
                                   textAlign: TextAlign.center,
                                   overflow: TextOverflow.ellipsis,
@@ -200,7 +264,9 @@ class _GameOverDialogState extends State<GameOverDialog> {
                       ),
                       Container(
                         height: 200,
-                        decoration: BoxDecoration(border: Border.all(color: Colors.white, width: 1), borderRadius: BorderRadius.circular(8)),
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Colors.white, width: 1),
+                            borderRadius: BorderRadius.circular(8)),
                         child: ListView.separated(
                           itemCount: top10.length,
                           separatorBuilder: (context, index) {
@@ -211,16 +277,24 @@ class _GameOverDialogState extends State<GameOverDialog> {
                             return ListTile(
                               dense: true,
                               visualDensity: VisualDensity.compact,
-                              leading: const Icon(Icons.person_4_rounded, color: Colors.white),
-                              title: Text("${user['username']}", style: const TextStyle(color: Colors.white), maxLines: 1),
-                              trailing: Text("${user['score']}", style: const TextStyle(color: Colors.white)),
+                              leading: const Icon(Icons.person_4_rounded,
+                                  color: Colors.white),
+                              title: Text("${user['username']}",
+                                  style: const TextStyle(color: Colors.white),
+                                  maxLines: 1),
+                              trailing: Text("${user['score']}",
+                                  style: const TextStyle(color: Colors.white)),
                             );
                           },
                         ),
                       ),
                       const Text(
                         "Please login to see the your rank",
-                        style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold, fontFamily: "Digital7"),
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: "Digital7"),
                       )
                     ],
                   ),
@@ -234,7 +308,11 @@ class _GameOverDialogState extends State<GameOverDialog> {
                     children: [
                       const Text(
                         "Getting Ranks...",
-                        style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold, fontFamily: "Digital7"),
+                        style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: "Digital7"),
                       ),
                       LinearProgressIndicator(
                         backgroundColor: Colors.blueGrey.shade700,
@@ -251,10 +329,18 @@ class _GameOverDialogState extends State<GameOverDialog> {
                     child: FilledButton(
                       onPressed: widget.onCancel,
                       style: FilledButton.styleFrom(
-                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(5), bottomLeft: Radius.circular(5))),
+                        shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(5),
+                                bottomLeft: Radius.circular(5))),
                         backgroundColor: Colors.blueGrey.shade400,
                       ),
-                      child: const Text("Cancel", style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold, fontFamily: "Digital7")),
+                      child: const Text("Cancel",
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "Digital7")),
                     ),
                   ),
                   Expanded(
@@ -264,17 +350,48 @@ class _GameOverDialogState extends State<GameOverDialog> {
                         shape: const RoundedRectangleBorder(),
                         backgroundColor: Colors.lightGreen,
                       ),
-                      child: const Text("Restart", style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold, fontFamily: "Digital7")),
+                      child: const Text("Restart",
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "Digital7")),
                     ),
                   ),
                   Expanded(
                     child: FilledButton(
-                      onPressed: widget.onContinue,
+                      onPressed: () async {
+                        setState(() {
+                          loadingAds = true;
+                        });
+                        await widget.onContinue?.call();
+                        setState(() {
+                          loadingAds = false;
+                        });
+                      },
                       style: FilledButton.styleFrom(
-                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topRight: Radius.circular(5), bottomRight: Radius.circular(5))),
+                        shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(5),
+                                bottomRight: Radius.circular(5))),
                         backgroundColor: Colors.blue,
                       ),
-                      child: const Text("Continue", style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold, fontFamily: "Digital7")),
+                      child: loadingAds
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                                strokeCap: StrokeCap.round,
+                              ),
+                            )
+                          : const Text("Continue",
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: "Digital7")),
                     ),
                   ),
                 ],

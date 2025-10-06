@@ -16,7 +16,7 @@ import 'package:flutter_game/utils/asset_utils.dart';
 import 'package:get/get.dart';
 
 class GlobalController extends GetxController {
-  final repository = AppRepository();
+  // final repository = AppRepository();
 
   bool isBgOn = true;
   bool isSfxOn = true;
@@ -274,7 +274,7 @@ class GlobalController extends GetxController {
     Loader.instance.show();
     try {
       dynamic body = {"email": email, "password": pass};
-      final result = await repository.login(body);
+      final result = await AppRepository.login(body);
       if (result != null) {
         dynamic userData = result['user'];
         dynamic token = result['token'];
@@ -303,7 +303,7 @@ class GlobalController extends GetxController {
   Future<void> signUp(String email) async {
     try {
       dynamic body = {"email": email};
-      final result = await repository.register(body);
+      final result = await AppRepository.register(body);
       if (result != null) {
         AppSnackBar.success("${result['message']}");
       }
@@ -317,7 +317,7 @@ class GlobalController extends GetxController {
   Future<void> verifyOtp(String email, otp) async {
     try {
       dynamic body = {"email": email, "otp": otp};
-      final result = await repository.verifyOtp(body);
+      final result = await AppRepository.verifyOtp(body);
       if (result != null) {
         Get.back(result: email);
         AppSnackBar.success("${result['message']}");
@@ -342,7 +342,7 @@ class GlobalController extends GetxController {
         "password": password,
         "username": username,
       };
-      final result = await repository.addUser(body);
+      final result = await AppRepository.addUser(body);
       if (result != null) {
         AppSnackBar.success("${result['message']}");
       }
@@ -363,7 +363,7 @@ class GlobalController extends GetxController {
         if (money != null) "money": money,
         if (highScore != null) "highScore": highScore,
       };
-      await repository.updateUser(body);
+      await AppRepository.updateUser(body);
     } catch (e) {
       debugPrint("Error in updating user: $e");
       return Future.error(e);
@@ -372,7 +372,7 @@ class GlobalController extends GetxController {
 
   Future<dynamic> getRank(String score) async {
     try {
-      final result = await repository.getRank(userId, score);
+      final result = await AppRepository.getRank(userId, score);
       return result;
     } catch (e) {
       debugPrint("Error in getting rank: $e");
@@ -381,7 +381,7 @@ class GlobalController extends GetxController {
 
   Future<dynamic> getUser() async {
     try {
-      final result = await repository.getUser();
+      final result = await AppRepository.getUser();
       return result;
     } catch (e) {
       debugPrint("Error in getting rank: $e");
