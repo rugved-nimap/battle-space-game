@@ -12,14 +12,14 @@ import 'package:get_storage/get_storage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  initializedDependencies();
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
+  await initializedDependencies();
   runApp(const MyApp());
 }
 
-void initializedDependencies() async {
+Future<void> initializedDependencies() async {
   ApiClient.instance.init();
 
   // TODO: Called this to start the server.
@@ -30,8 +30,8 @@ void initializedDependencies() async {
   }
 
   try {
-    GoogleAdsService.instance.initialize();
     await GetStorage.init(StorageKey.storageName);
+    await GoogleAdsService.instance.initialize();
   } catch (err) {
     debugPrint("Error in starting the app: $err");
   }
