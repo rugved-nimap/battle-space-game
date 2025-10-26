@@ -8,19 +8,8 @@
         errorLine2="        ~~~~~~~~~~~~~~">
         <location
             file="build.gradle"
-            line="38"
+            line="39"
             column="9"/>
-    </issue>
-
-    <issue
-        id="PropertyEscape"
-        message="Windows file separators (`\`) and drive letter separators (&apos;:&apos;) must be escaped (`\\`) in property files; use C\\:\\\\Program Files\\\\Java\\\\jdk-21"
-        errorLine1="org.gradle.java.home=C:\\Program Files\\Java\\jdk-21"
-        errorLine2="                      ~">
-        <location
-            file="../gradle.properties"
-            line="4"
-            column="23"/>
     </issue>
 
     <issue
@@ -65,6 +54,28 @@
             file="build.gradle"
             line="16"
             column="5"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.appcompat:appcompat than 1.6.1 is available: 1.7.1"
+        errorLine1="    implementation &quot;androidx.appcompat:appcompat:1.6.1&quot;"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="build.gradle"
+            line="70"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of androidx.core:core-ktx than 1.10.1 is available: 1.17.0"
+        errorLine1="    implementation &quot;androidx.core:core-ktx:1.10.1&quot;"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="build.gradle"
+            line="71"
+            column="20"/>
     </issue>
 
     <issue

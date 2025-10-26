@@ -14,10 +14,11 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace = "com.rugved.battle_space"
     compileSdk = 35
-    ndkVersion = "29.0.13113456 rc1"
+    ndkVersion = "29.0.14206865"
 
     lint {
         baseline = file("lint-baseline.xml")
+        abortOnError false
     }
 
     compileOptions {
@@ -52,6 +53,8 @@ android {
     buildTypes {
         release {
             signingConfig = signingConfigs.release
+            minifyEnabled false
+            shrinkResources false
         }
     }
 }

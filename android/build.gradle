@@ -18,23 +18,9 @@ allprojects {
 }
 
 rootProject.buildDir = "../build"
+
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
-
-    // Suppress lint errors in plugins (important for google_mobile_ads, webview_flutter, etc.)
-    plugins.whenPluginAdded { plugin ->
-        if (plugin.hasProperty("android")) {
-            android {
-                lint {
-                    // Disable aborting build on plugin lint errors
-                    checkReleaseBuilds false
-                    abortOnError false
-                }
-            }
-        }
-    }
-}
-subprojects {
     project.evaluationDependsOn(":app")
 }
 
