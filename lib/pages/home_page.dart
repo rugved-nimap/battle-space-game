@@ -61,7 +61,7 @@ class HomePage extends StatelessWidget {
                     children: [
                       InkWell(
                         onTap: () {
-                          GoogleAdsService.instance.rewardedAds(onUserEarnedReward: (ad, reward) {
+                          GoogleAdsService.instance.showRewardedAds(onUserEarnedReward: (ad, reward) {
                             AppSnackBar.success("10 coins are added to your wallet.");
                             controller.userCoins += 10;
                             controller.update();
@@ -132,7 +132,7 @@ class HomePage extends StatelessWidget {
                         Get.to(() => const GameWidgetPage())?.then((value) {
                           controller.update();
                           if (controller.showAds == true) {
-                            GoogleAdsService.instance.interstitialAds();
+                            GoogleAdsService.instance.showInterstitialAds();
                             controller.showAds = false;
                           }
                         });
@@ -173,7 +173,7 @@ class HomePage extends StatelessWidget {
                     const SizedBox(height: 8),
                     ElevatedButton(
                       onPressed: () {
-                        GoogleAdsService.instance.interstitialAds().then((value) {
+                        GoogleAdsService.instance.showInterstitialAds().then((value) {
                           exit(0);
                         });
                       },

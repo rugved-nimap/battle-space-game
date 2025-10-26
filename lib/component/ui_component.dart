@@ -219,7 +219,7 @@ class UiComponent extends Component with HasGameRef {
           Get.back();
         },
         onContinue: () async {
-          await GoogleAdsService.instance.rewardedAds(
+          await GoogleAdsService.instance.showRewardedAds(
             onUserEarnedReward: (ad, reward) {
               Get.back();
               continueGame();

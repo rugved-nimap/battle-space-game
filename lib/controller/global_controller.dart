@@ -62,7 +62,7 @@ class GlobalController extends GetxController {
         }
       });
     } else {
-      GoogleAdsService.instance.onAppOpenAds();
+      GoogleAdsService.instance.showOnAppOpenAds();
     }
   }
 
