@@ -1,0 +1,2 @@
+/Users/rugved/Desktop/workspace/battle-space-game/android/app/.cxx/RelWithDebInfo/1o371e5a/armeabi-v7a/CMakeFiles/edit_cache.dir
+/Users/rugved/Desktop/workspace/battle-space-game/android/app/.cxx/RelWithDebInfo/1o371e5a/armeabi-v7a/CMakeFiles/rebuild_cache.dir
