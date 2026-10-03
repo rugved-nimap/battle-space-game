@@ -33,7 +33,7 @@ class PlayerBullet extends SpriteComponent with HasGameRef, CollisionCallbacks {
     super.onCollisionStart(intersectionPoints, other);
 
     if (other is Enemy) {
-      other.hitCount += 1;
+      other.takeHit();
       removeFromParent();
     }
   }

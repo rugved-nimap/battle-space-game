@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "/Users/rugved/Desktop/configuration/flutter-3-29-0/packages/flutter_tools/gradle/src/main/groovy/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Users/rugved/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/Users/rugved/Desktop/workspace/battle-space-game/android/app/.cxx/Debug/03a1v551/armeabi-v7a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Users/rugved/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/Users/rugved/Desktop/workspace/battle-space-game/android/app/.cxx/Debug/03a1v551/armeabi-v7a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {}
+}

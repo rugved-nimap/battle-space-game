@@ -2,10 +2,12 @@ import 'dart:async';
 
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_game/network/api_client.dart';
 import 'package:flutter_game/repository/app_repository.dart';
 import 'package:flutter_game/reusable_widgets/add_user_bottom_sheet.dart';
 import 'package:flutter_game/reusable_widgets/app_snack_bar.dart';
+import 'package:flutter_game/reusable_widgets/control_settings.dart';
 import 'package:flutter_game/reusable_widgets/loader.dart';
 import 'package:flutter_game/reusable_widgets/login_bottom_sheet.dart';
 import 'package:flutter_game/reusable_widgets/sign_up_bottom_sheet.dart';
@@ -20,6 +22,11 @@ class GlobalController extends GetxController {
 
   bool isBgOn = true;
   bool isSfxOn = true;
+
+  // Controls (changed in Settings and in the pause menu).
+  bool autoFire = false;
+  bool dragAnywhere = true;
+  bool vibrationOn = true;
   late AudioPool fireSoundPool;
   late AudioPool explosionSoundPool;
 
@@ -78,6 +85,9 @@ class GlobalController extends GetxController {
     isBgOn = AppStorage.valueFor(StorageKey.musicSetting) ?? true;
     isSfxOn = AppStorage.valueFor(StorageKey.sfxSetting) ?? true;
     playerSprite = AppStorage.valueFor(StorageKey.playerSprite) ?? AssetUtils.playerSprite1;
+    autoFire = AppStorage.valueFor(StorageKey.autoFire) ?? false;
+    dragAnywhere = AppStorage.valueFor(StorageKey.dragAnywhere) ?? true;
+    vibrationOn = AppStorage.valueFor(StorageKey.vibration) ?? true;
 
     // Get latest updated data from Server
     if (AppStorage.valueFor(StorageKey.accessToken) != null && callApi) {
@@ -119,6 +129,50 @@ class GlobalController extends GetxController {
     }
     fireSoundPool = await FlameAudio.createPool(AssetUtils.firingSound, maxPlayers: 100, minPlayers: 1);
     explosionSoundPool = await FlameAudio.createPool(AssetUtils.explosionSound, maxPlayers: 100, minPlayers: 1);
+  }
+
+  // ---------- Controls ----------
+  // These only save the value. They don't call update(), because update()
+  // rebuilds GameWidgetPage, and they are also used from the pause menu.
+
+  void setAutoFire(bool value) {
+    autoFire = value;
+    AppStorage.setValue(StorageKey.autoFire, value);
+  }
+
+  void setDragAnywhere(bool value) {
+    dragAnywhere = value;
+    AppStorage.setValue(StorageKey.dragAnywhere, value);
+  }
+
+  void setVibration(bool value) {
+    vibrationOn = value;
+    AppStorage.setValue(StorageKey.vibration, value);
+  }
+
+  void toggleMusic() {
+    isBgOn ? FlameAudio.bgm.stop() : FlameAudio.bgm.play(AssetUtils.bgMusic);
+    isBgOn = !isBgOn;
+    AppStorage.setValue(StorageKey.musicSetting, isBgOn);
+  }
+
+  void toggleSfx() {
+    isSfxOn = !isSfxOn;
+    AppStorage.setValue(StorageKey.sfxSetting, isSfxOn);
+  }
+
+  // ---------- Vibration ----------
+
+  void hapticLight() {
+    if (vibrationOn) HapticFeedback.lightImpact();
+  }
+
+  void hapticMedium() {
+    if (vibrationOn) HapticFeedback.mediumImpact();
+  }
+
+  void hapticHeavy() {
+    if (vibrationOn) HapticFeedback.heavyImpact();
   }
 
   void settings() {
@@ -178,6 +232,7 @@ class GlobalController extends GetxController {
                   ),
                 ],
               ),
+              const ControlSettings(),
               ElevatedButton(
                 onPressed: Get.back,
                 style: ButtonStyle(

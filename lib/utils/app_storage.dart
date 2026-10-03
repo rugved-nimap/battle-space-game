@@ -29,4 +29,7 @@ class StorageKey {
   static String accessToken = "access_token";
   static String userId = "user_id";
   static String email = "email";
+  static String autoFire = "auto_fire";
+  static String dragAnywhere = "drag_anywhere";
+  static String vibration = "vibration";
 }

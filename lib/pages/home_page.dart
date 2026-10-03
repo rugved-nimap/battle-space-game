@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_game/controller/global_controller.dart';
 import 'package:flutter_game/pages/game_widget_page.dart';
+import 'package:flutter_game/pages/leaderboard_page.dart';
 import 'package:flutter_game/reusable_widgets/app_snack_bar.dart';
 import 'package:flutter_game/reusable_widgets/banner_ads_widget.dart';
 import 'package:flutter_game/reusable_widgets/sprite_button.dart';
@@ -144,6 +145,25 @@ class HomePage extends StatelessWidget {
                       ),
                       child: const Text(
                         "Play",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 25,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    ElevatedButton(
+                      onPressed: () {
+                        Get.to(() => const LeaderboardPage(), transition: Transition.rightToLeft);
+                      },
+                      style: ButtonStyle(
+                        backgroundColor: const WidgetStatePropertyAll(Colors.indigoAccent),
+                        shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+                        padding: const WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 25, vertical: 5)),
+                      ),
+                      child: const Text(
+                        "Leaderboard",
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,

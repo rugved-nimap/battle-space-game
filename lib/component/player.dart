@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
+import 'package:flame/particles.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_game/component/helper_spacecraft.dart';
 import 'package:flutter_game/component/player_bullet.dart';
 import 'package:flutter_game/controller/global_controller.dart';
@@ -21,6 +24,10 @@ class Player extends PositionComponent with HasGameRef, DragCallbacks, Collision
   double lastFireTime = 0.0;
   int hitCount = 0;
   late final SpriteComponent sprite;
+
+  double _flashTime = 0;
+  double _trailTime = 0;
+  final Random _rng = Random();
 
   @override
   FutureOr<void> onLoad() async {
@@ -49,6 +56,22 @@ class Player extends PositionComponent with HasGameRef, DragCallbacks, Collision
     super.update(dt);
     lastFireTime += dt;
 
+    // Red flash after being hit.
+    if (_flashTime > 0) {
+      _flashTime -= dt;
+      if (_flashTime <= 0) sprite.paint.colorFilter = null;
+    }
+
+    // Engine trail.
+    _trailTime += dt;
+    if (_trailTime >= 0.04) {
+      _trailTime = 0;
+      _spawnTrail();
+    }
+
+    // Controls: auto-fire shoots without dragging.
+    if (controller.autoFire) playerBulletSpawn();
+
     if (hitCount >= 5) {
       (gameRef as MyGame).gameOverFunc();
     }
@@ -59,6 +82,35 @@ class Player extends PositionComponent with HasGameRef, DragCallbacks, Collision
     super.onDragUpdate(event);
     position.x += event.canvasDelta.x;
     playerBulletSpawn();
+  }
+
+  /// Controls: with "drag anywhere" on, a drag started anywhere on the screen
+  /// moves the ship (not only a drag that starts on the ship).
+  @override
+  bool containsLocalPoint(Vector2 point) => controller.dragAnywhere || super.containsLocalPoint(point);
+
+  /// Called by MyGame.onPlayerHit.
+  void flashHit() {
+    _flashTime = 0.15;
+    sprite.paint.colorFilter = ColorFilter.mode(Colors.red.withValues(alpha: 0.7), BlendMode.srcATop);
+  }
+
+  void _spawnTrail() {
+    final color = _rng.nextBool() ? Colors.orangeAccent : Colors.lightBlueAccent;
+    gameRef.add(
+      ParticleSystemComponent(
+        position: position + Vector2(size.x / 2 + (_rng.nextDouble() * 10 - 5), size.y * 0.85),
+        priority: 1,
+        particle: AcceleratedParticle(
+          lifespan: 0.35,
+          speed: Vector2(_rng.nextDouble() * 30 - 15, 160 + _rng.nextDouble() * 60),
+          child: CircleParticle(
+            radius: 2 + _rng.nextDouble() * 2,
+            paint: Paint()..color = color.withValues(alpha: 0.8),
+          ),
+        ),
+      ),
+    );
   }
 
   void getHelper() {

@@ -4,6 +4,7 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flutter_game/component/health_bar.dart';
 import 'package:flutter_game/component/player.dart';
+import 'package:flutter_game/flame/my_game.dart';
 
 class EnemyBullet extends SpriteComponent with HasGameRef, CollisionCallbacks {
   final PositionComponent healthBar;
@@ -42,6 +43,7 @@ class EnemyBullet extends SpriteComponent with HasGameRef, CollisionCallbacks {
       if (healthBar is HealthBar) {
         (healthBar as HealthBar).updateHearts(5 - other.hitCount);
       }
+      (gameRef as MyGame).onPlayerHit(); // shake, red flash, vibration
       removeFromParent();
     }
   }

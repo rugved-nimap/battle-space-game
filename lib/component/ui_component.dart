@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flame/components.dart';
+import 'package:flame/effects.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_game/component/health_bar.dart';
 import 'package:flutter_game/controller/global_controller.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_game/flame/my_game.dart';
 import 'package:flutter_game/reusable_widgets/game_over_dialog.dart';
 import 'package:flutter_game/services/google_ads_service.dart';
 import 'package:flutter_game/utils/app_storage.dart';
+import 'package:flutter_game/utils/asset_utils.dart';
 import 'package:get/get.dart';
 
 class UiComponent extends Component with HasGameRef {
@@ -19,7 +21,20 @@ class UiComponent extends Component with HasGameRef {
     required this.score,
     required this.distance,
     required this.screenSize,
+    this.level = 1,
+    this.coins = 0,
   }) : super(priority: 3);
+
+  int level;
+
+  /// Coins collected from enemy drops in this run.
+  int coins;
+
+  late TextComponent levelText;
+  late TextComponent coinText;
+
+  /// Where dropped coins fly to (the coin icon in the top-right corner).
+  Vector2 get coinTarget => Vector2(screenSize.x - 40, 70);
 
   late TextComponent scoreText;
   late TextComponent distanceText;
@@ -188,10 +203,50 @@ class UiComponent extends Component with HasGameRef {
       ..anchor = Anchor.topRight
       ..scale = Vector2(-1, 1);
 
+    levelText = TextComponent(
+      text: "LEVEL $level",
+      position: Vector2(25, 90),
+      textRenderer: TextPaint(
+        style: const TextStyle(
+          fontSize: 12,
+          color: Colors.amberAccent,
+          fontFamily: "Digital7",
+        ),
+      ),
+      priority: 3,
+    );
+
+    coinText = TextComponent(
+      text: "$coins",
+      anchor: Anchor.topRight,
+      position: Vector2(screenSize.x - 46, 71),
+      textRenderer: TextPaint(
+        style: const TextStyle(
+          fontSize: 18,
+          color: Colors.amber,
+          fontFamily: "Digital7",
+        ),
+      ),
+      priority: 3,
+    );
+
     add(scoreText);
     add(distanceText);
     add(fpsTextComponent);
     add(healthBar);
+    add(levelText);
+    add(coinText);
+
+    // Coin icon for the coin counter. Loaded last, so every text above is
+    // ready before MyGame starts calling the update methods.
+    add(
+      SpriteComponent(
+        sprite: await gameRef.loadSprite(AssetUtils.coin.split('/').last),
+        size: Vector2.all(22),
+        position: coinTarget,
+        priority: 3,
+      ),
+    );
 
     return super.onLoad();
   }
@@ -200,6 +255,50 @@ class UiComponent extends Component with HasGameRef {
     score = newScore;
     scoreText.text = "Score: $score";
     gameOverScoreText.text = "Score: $score";
+  }
+
+  void updateCoins(int newCoins) {
+    coins = newCoins;
+    coinText.text = "$coins";
+  }
+
+  /// Big "LEVEL n" banner in the middle of the screen.
+  void showLevelUp(int newLevel) {
+    level = newLevel;
+    levelText.text = "LEVEL $level";
+
+    final subtitle = switch (newLevel) {
+      2 => "Zig-zag fighters incoming!",
+      3 => "Watch out for kamikazes!",
+      4 => "Heavy tanks spotted!",
+      _ => "Enemies are getting faster!",
+    };
+
+    add(_bannerText("LEVEL $level", 44, screenSize.y * 0.35));
+    add(_bannerText(subtitle, 16, screenSize.y * 0.35 + 40));
+  }
+
+  TextComponent _bannerText(String text, double fontSize, double y) {
+    return TextComponent(
+      text: text,
+      anchor: Anchor.center,
+      position: Vector2(screenSize.x / 2, y),
+      scale: Vector2.all(0.3),
+      priority: 5,
+      textRenderer: TextPaint(
+        style: TextStyle(
+          fontSize: fontSize,
+          color: Colors.amberAccent,
+          fontWeight: FontWeight.bold,
+          fontFamily: "Digital7",
+          shadows: const [Shadow(color: Colors.black, blurRadius: 8)],
+        ),
+      ),
+      children: [
+        ScaleEffect.to(Vector2.all(1), EffectController(duration: 0.4, curve: Curves.easeOutBack)),
+        RemoveEffect(delay: 1.6),
+      ],
+    );
   }
 
   void updateDistance(double newDistance) {

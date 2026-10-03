@@ -16,10 +16,19 @@ class Coin extends SpriteComponent with HasGameRef {
     required Vector2 position,
     Vector2? size,
     required this.scatterDirection,
+    this.value = 5,
+    this.onCollected,
   }) : super(
     position: position,
     size: size ?? Vector2.all(32),
+    priority: 4,
   );
+
+  /// Coins added to the wallet when this coin reaches its target.
+  final int value;
+
+  /// Called on arrival, e.g. to update the in-game coin counter.
+  final void Function(int value)? onCollected;
 
   double speed = 100;
   late Vector2 scatterDirection;
@@ -50,8 +59,9 @@ class Coin extends SpriteComponent with HasGameRef {
       position += direction * speed * dt;
 
       if ((targetPosition - position).length < 10) {
-        controller.userCoins += 5;
+        controller.userCoins += value;
         AppStorage.setValue(StorageKey.userCoins, controller.userCoins);
+        onCollected?.call(value);
         removeFromParent();
       }
     }
